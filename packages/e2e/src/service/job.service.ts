@@ -1,19 +1,13 @@
-import {
-  fetchAvailableTokens,
-  fetchEthereumBalance,
-  fetchINTMAXBalances,
-  initializeClient,
-  loginAndLogAddresses,
-} from "./intmax.service";
+import { logger } from "@intmax2-e2e/shared";
+import { INTMAXClient } from "../lib/intmax";
 
 export const performJob = async (): Promise<void> => {
-  const client = initializeClient();
+  const intmaxClient = INTMAXClient.getInstance();
+  await intmaxClient.login();
 
-  const { account } = await loginAndLogAddresses(client);
+  const ethBalance = await intmaxClient.fetchEthereumBalance();
+  logger.info(`Ethereum Balance: ${ethBalance} ETH`);
 
-  await fetchEthereumBalance(account);
-
-  await fetchINTMAXBalances(client);
-
-  await fetchAvailableTokens(client);
+  const availableTokens = await intmaxClient.fetchAvailableTokens();
+  logger.info(`Available tokens: ${availableTokens.length}`);
 };
