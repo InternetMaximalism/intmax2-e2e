@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "dependencies": {
     "@intmax2-e2e/shared": "workspace:*",
-    "intmax2-server-sdk": "^1.4.5"
+    "intmax2-server-sdk": "^1.4.5",
+    "viem": "^2.33.3"
   },
   "scripts": {
     "start": "node dist/index.js",
