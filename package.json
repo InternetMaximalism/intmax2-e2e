@@ -1,0 +1,51 @@
+{
+  "name": "intmax2-e2e",
+  "version": "1.0.0",
+  "license": "MIT",
+  "description": "End-to-End Testing for INTMAX2 blockchain",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/InternetMaximalism/intmax2-e2e.git"
+  },
+  "bugs": {
+    "url": "https://github.com/InternetMaximalism/intmax2-e2e/issues"
+  },
+  "homepage": "https://github.com/InternetMaximalism/intmax2-e2e#readme",
+  "keywords": [
+    "intmax2",
+    "blockchain",
+    "e2e",
+    "web3",
+    "ethereum",
+    "layer2"
+  ],
+  "engines": {
+    "node": ">=20.0.0",
+    "yarn": ">=4.0.0"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "yarn workspaces foreach --all --topological run build",
+    "build:shared": "yarn workspace @intmax2-e2e/shared run build",
+    "build:parallel": "yarn workspaces foreach --all -pt run build",
+    "lint": "biome lint .",
+    "format": "biome check --write --unsafe .",
+    "check": "biome check .",
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.1.3",
+    "@vitest/coverage-v8": "^3.2.4",
+    "dotenv": "^17.2.1",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  },
+  "packageManager": "yarn@4.9.2",
+  "volta": {
+    "node": "24.5.0",
+    "yarn": "4.9.2"
+  }
+}
