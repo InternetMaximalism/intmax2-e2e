@@ -14,6 +14,8 @@ export const config = cleanEnv(process.env, {
   }),
   SERVICE_NAME: str({ default: "intmax2-withdrawal-aggregator" }),
   SERVICE_VERSION: str({ default: version }),
+  // contract
+  LIQUIDITY_CONTRACT_ADDRESS: str({ default: "0x1234" as const }),
   // sdk
   ENVIRONMENT: str({ default: "testnet", choices: ["mainnet", "testnet"] as const }),
   ETH_PRIVATE_KEY: str({ default: "0x1234" as const }),

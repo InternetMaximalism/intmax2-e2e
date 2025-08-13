@@ -8,6 +8,9 @@ export const performJob = async (): Promise<void> => {
   const ethBalance = await intmaxClient.fetchEthereumBalance();
   logger.info(`Ethereum Balance: ${ethBalance} ETH`);
 
-  const availableTokens = await intmaxClient.fetchAvailableTokens();
-  logger.info(`Available tokens: ${availableTokens.length}`);
+  const intmaxBalance = await intmaxClient.fetchINTMAXBalances();
+  // logger.info(`INTMAX Balance: ${JSON.stringify(intmaxBalance, null, 2)}`);
+
+  const depositResult = await intmaxClient.depositNativeToken();
+  logger.info(`Deposit Result: ${JSON.stringify(depositResult, null, 2)}`);
 };

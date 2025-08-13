@@ -1,6 +1,6 @@
 # e2e
 
-The collector gathers pending withdrawal processes and groups them.
+The e2e service monitors and manages INTMAX interactions, including collecting and grouping pending withdrawal processes.
 
 ## Usage
 
