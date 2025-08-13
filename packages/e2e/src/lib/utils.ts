@@ -21,35 +21,33 @@ const formatTokenAmount = (amount: bigint, decimals: number) => {
   return `${wholePart}.${trimmedFractional}`;
 };
 
-export const formatAndLogBalances = (balances: TokenBalance[]) => {
+export const formatAndLogINTMAXBalances = (balances: TokenBalance[]) => {
   if (!balances || balances.length === 0) {
     logger.debug("Token Balances: No balances found");
     return;
   }
 
-  console.log("📊 Token Balances:");
-  console.log("─".repeat(80));
+  let output = "📊 Token Balances:\n";
+  output += "─".repeat(80) + "\n";
 
   balances.forEach((balance, index) => {
     const { token, amount } = balance;
-
     const readableAmount = formatTokenAmount(amount, token.decimals!);
-
     const usdValue = token.price ? (parseFloat(readableAmount) * token.price).toFixed(2) : "N/A";
 
-    console.log(`${index + 1}. ${token.symbol}`);
-    console.log(`   Amount: ${readableAmount} ${token.symbol}`);
-    console.log(`   USD Value: $${usdValue}`);
-    console.log(`   Contract: ${token.contractAddress}`);
-    console.log(`   Token Index: ${token.tokenIndex}`);
-    console.log(`   Price: $${token.price || "N/A"}`);
+    output += `${index + 1}. ${token.symbol}\n`;
+    output += `   Amount: ${readableAmount} ${token.symbol}\n`;
+    output += `   USD Value: $${usdValue}\n`;
+    output += `   Contract: ${token.contractAddress}\n`;
+    output += `   Token Index: ${token.tokenIndex}\n`;
+    output += `   Price: $${token.price || "N/A"}\n`;
 
     if (index < balances.length - 1) {
-      console.log("─".repeat(40));
+      output += "─".repeat(40) + "\n";
     }
   });
 
-  console.log("─".repeat(80));
+  output += "─".repeat(80) + "\n";
 
   const totalUsdValue = balances.reduce((total, balance) => {
     const readableAmount = formatTokenAmount(balance.amount, balance.token.decimals!);
@@ -57,7 +55,13 @@ export const formatAndLogBalances = (balances: TokenBalance[]) => {
     return total + usdValue;
   }, 0);
 
-  logger.debug(`Total Portfolio Value: $${totalUsdValue.toFixed(2)}`);
+  output += `💰 Total Portfolio Value: $${totalUsdValue.toFixed(2)}`;
+
+  logger.info(output);
+};
+
+export const logEthereumBalance = (balance: string) => {
+  logger.info(`Ethereum Balance: ${balance} ETH`);
 };
 
 export const formatAndLogAddresses = (addresses: ClientAddresses | null) => {
@@ -66,6 +70,9 @@ export const formatAndLogAddresses = (addresses: ClientAddresses | null) => {
     return;
   }
 
-  logger.info(`ETH Address: ${addresses.ethAddress}`);
-  logger.info(`INTMAX Address: ${addresses.intmaxAddress}`);
+  const output = `📍 Client Addresses:
+ETH Address: ${addresses.ethAddress}
+INTMAX Address: ${addresses.intmaxAddress}`;
+
+  logger.info(output);
 };
