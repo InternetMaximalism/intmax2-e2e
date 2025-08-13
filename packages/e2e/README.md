@@ -1,6 +1,6 @@
 # e2e
 
-The e2e service monitors and manages INTMAX interactions, including collecting and grouping pending withdrawal processes.
+The e2e service monitors and manages INTMAX interactions.
 
 ## Usage
 

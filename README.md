@@ -1,6 +1,6 @@
 # intmax2-e2e
 
-The withdrawal aggregator is responsible for consolidating withdrawals and managing requests to the ZKP (Zero-Knowledge Proof).
+End-to-end testing suite for the INTMAX2 protocol. This repository contains comprehensive integration tests that verify the complete functionality of the INTMAX2 system, including wallet operations, token transfers, balance queries, and cross-chain interactions.
 
 ## Setup
 
@@ -22,7 +22,7 @@ yarn build:shared
 Start the processor or job service in development mode:
 
 ```sh
-# collector
+# e2e
 yarn workspace e2e dev
 ```
 

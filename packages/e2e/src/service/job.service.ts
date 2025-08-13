@@ -1,3 +1,4 @@
+import { logger } from "@intmax2-e2e/shared";
 import { INTMAXClient } from "../lib/intmax";
 import {
   formatAndLogAddresses,
@@ -17,6 +18,6 @@ export const performJob = async (): Promise<void> => {
   const intmaxBalances = await intmaxClient.fetchINTMAXBalances();
   formatAndLogINTMAXBalances(intmaxBalances);
 
-  // const depositResult = await intmaxClient.depositNativeToken(0.000001);
-  // logger.info(`Deposit Result: ${JSON.stringify(depositResult, null, 2)}`);
+  const depositResult = await intmaxClient.depositNativeToken(0.000001);
+  logger.info(`Deposit TxHash: ${depositResult.txHash}`);
 };

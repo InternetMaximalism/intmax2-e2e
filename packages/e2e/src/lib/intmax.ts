@@ -1,5 +1,5 @@
 import { config, createNetworkClient, LiquidityAbi, logger } from "@intmax2-e2e/shared";
-import { IntMaxNodeClient, TokenType, type Token } from "intmax2-server-sdk";
+import { IntMaxNodeClient, TokenType, type Token, TransactionStatus } from "intmax2-server-sdk";
 import { formatEther, type PublicClient, type Abi } from "viem";
 import type { Account } from "viem/accounts";
 import { privateKeyToAccount } from "viem/accounts";
@@ -133,10 +133,12 @@ export class INTMAXClient {
       });
       logger.debug(`Estimated gas for deposit: ${gas.toString()}`);
 
-      const deposit = await this.client.deposit(depositParams);
-      logger.debug(`Deposit result: ${JSON.stringify(deposit, null, 2)}`);
+      const depositResult = await this.client.deposit(depositParams);
+      if (depositResult.status !== TransactionStatus.Completed) {
+        throw new Error("Deposit failed");
+      }
 
-      return deposit;
+      return depositResult;
     } catch (error) {
       logger.error(
         `Failed to deposit native token: ${error instanceof Error ? error.message : "Unknown error"}`,
