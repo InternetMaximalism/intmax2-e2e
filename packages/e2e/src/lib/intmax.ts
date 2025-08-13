@@ -7,28 +7,28 @@ import type { ClientAddresses, DepositParams, TokenInfo } from "../types";
 import { ETH_TOKEN_INDEX } from "../constants";
 
 export class INTMAXClient {
+  private static instance: INTMAXClient;
   private client: IntMaxNodeClient;
   private account: Account;
   private isLoggedIn: boolean = false;
-  private static instance: INTMAXClient;
   private availableTokens: Token[] = [];
   private ethereumClient: PublicClient;
 
   constructor() {
     const clientConfig = {
       environment: config.ENVIRONMENT,
-      eth_private_key: config.ETH_PRIVATE_KEY as `0x${string}`,
+      eth_private_key: config.ETH_PRIVATE_KEY,
       l1_rpc_url: config.L1_RPC_URL,
-      urls: process.env.BALANCE_PROVER_URL
-        ? {
-            balance_prover_url: process.env.BALANCE_PROVER_URL,
-            use_private_zkp_server: false,
-          }
-        : undefined,
+      ...(config.BALANCE_PROVER_URL && {
+        urls: {
+          balance_prover_url: config.BALANCE_PROVER_URL,
+          use_private_zkp_server: false,
+        },
+      }),
     };
 
     this.client = new IntMaxNodeClient(clientConfig);
-    this.account = privateKeyToAccount(config.ETH_PRIVATE_KEY as `0x${string}`);
+    this.account = privateKeyToAccount(config.ETH_PRIVATE_KEY);
     this.ethereumClient = createNetworkClient("ethereum");
   }
 
@@ -51,15 +51,11 @@ export class INTMAXClient {
         account: this.account,
       };
 
-      logger.info(`ETH Address: ${addresses.ethAddress}`);
-      logger.info(`INTMAX Address: ${addresses.intmaxAddress}`);
-
       await this.loadAvailableTokens();
 
       return addresses;
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-      logger.error(`Failed to login: ${message}`);
+      logger.error(`Failed to login: ${error instanceof Error ? error.message : "Unknown error"}`);
       throw error;
     }
   }
@@ -76,16 +72,13 @@ export class INTMAXClient {
       }
 
       this.availableTokens = tokens;
-      logger.info(`Available tokens loaded: ${tokens.length}`);
+      logger.debug(`Available tokens loaded: ${tokens.length}`);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-      logger.error(`Failed to load available tokens: ${message}`);
+      logger.error(
+        `Failed to load available tokens: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
       throw error;
     }
-  }
-
-  getAvailableTokens(): Token[] {
-    return this.availableTokens;
   }
 
   async fetchEthereumBalance() {
@@ -95,8 +88,59 @@ export class INTMAXClient {
 
       return formattedBalance;
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-      logger.error(`Failed to fetch Ethereum balance: ${message}`);
+      logger.error(
+        `Failed to fetch Ethereum balance: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
+      throw error;
+    }
+  }
+
+  async fetchINTMAXBalances() {
+    try {
+      logger.debug("Fetching INTMAX token balances...");
+      const { balances } = await this.client.fetchTokenBalances();
+
+      if (balances.length === 0) {
+        logger.info("No token balances found");
+        return [];
+      }
+
+      return balances;
+    } catch (error) {
+      logger.error(
+        `Failed to fetch INTMAX balances: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
+      throw error;
+    }
+  }
+
+  async depositNativeToken(amount: number) {
+    const token = await this.getNativeToken();
+
+    const depositParams: DepositParams = {
+      amount,
+      token,
+      address: this.client.address,
+      isMining: false,
+    };
+
+    try {
+      logger.debug("Preparing deposit...");
+      const gas = await this.client.estimateDepositGas({
+        ...depositParams,
+        isGasEstimation: true,
+        isMining: false,
+      });
+      logger.debug(`Estimated gas for deposit: ${gas.toString()}`);
+
+      const deposit = await this.client.deposit(depositParams);
+      logger.debug(`Deposit result: ${JSON.stringify(deposit, null, 2)}`);
+
+      return deposit;
+    } catch (error) {
+      logger.error(
+        `Failed to deposit native token: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
       throw error;
     }
   }
@@ -110,58 +154,6 @@ export class INTMAXClient {
       args: [BigInt(tokenIndex)],
     });
     return result as TokenInfo;
-  }
-
-  async fetchINTMAXBalances() {
-    try {
-      logger.debug("Fetching INTMAX token balances...");
-      const { balances } = await this.client.fetchTokenBalances();
-
-      if (balances.length === 0) {
-        logger.info("No token balances found");
-        return [];
-      }
-
-      logger.info("Token Balances:");
-      // TODO: Format
-      // console.log("balances", balances);
-
-      return balances;
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-      logger.error(`Failed to fetch INTMAX balances:: ${message}`);
-      throw error;
-    }
-  }
-
-  async depositNativeToken(amount: number = 0.000001) {
-    const token = await this.getNativeToken();
-
-    const depositParams: DepositParams = {
-      amount,
-      token,
-      address: this.client.address,
-      isMining: false,
-    };
-
-    try {
-      logger.debug("\nPreparing deposit...");
-      const gas = await this.client.estimateDepositGas({
-        ...depositParams,
-        isGasEstimation: true,
-        isMining: false,
-      });
-      logger.debug(`Estimated gas for deposit: ${gas.toString()}`);
-
-      const deposit = await this.client.deposit(depositParams);
-      logger.debug(`Deposit result: ${JSON.stringify(deposit, null, 2)}`);
-
-      return deposit;
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-      logger.error(`Failed to deposit native token: ${message}`);
-      throw error;
-    }
   }
 
   async getNativeToken() {
@@ -181,6 +173,15 @@ export class INTMAXClient {
     return this.formatToken(nativeToken);
   }
 
+  private async getTokenType(tokenIndex: number) {
+    if (tokenIndex === ETH_TOKEN_INDEX) {
+      return TokenType.NATIVE;
+    }
+
+    const { tokenType } = await this.getTokenInfo(tokenIndex);
+    return tokenType;
+  }
+
   private async formatToken({ tokenIndex, decimals, contractAddress, price }: Token) {
     const tokenType = await this.getTokenType(tokenIndex);
     return {
@@ -190,15 +191,6 @@ export class INTMAXClient {
       contractAddress,
       price,
     };
-  }
-
-  private async getTokenType(tokenIndex: number) {
-    if (tokenIndex === ETH_TOKEN_INDEX) {
-      return TokenType.NATIVE;
-    }
-
-    const { tokenType } = await this.getTokenInfo(tokenIndex);
-    return tokenType;
   }
 
   getAddresses(): ClientAddresses | null {
@@ -211,13 +203,5 @@ export class INTMAXClient {
       intmaxAddress: this.client.address,
       account: this.account,
     };
-  }
-
-  getInternalClient() {
-    if (!this.isLoggedIn) {
-      throw new Error("Client is not logged in. Please call login() first.");
-    }
-
-    return this.client;
   }
 }

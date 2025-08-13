@@ -1,5 +1,6 @@
 import { cleanEnv, num, str } from "envalid";
 import { version } from "../../../../package.json";
+import { ethPrivateKey, contractAddress } from "./utils";
 
 export const config = cleanEnv(process.env, {
   // app
@@ -12,14 +13,14 @@ export const config = cleanEnv(process.env, {
     choices: ["fatal", "error", "warn", "info", "debug", "trace"],
     default: "info",
   }),
-  SERVICE_NAME: str({ default: "intmax2-withdrawal-aggregator" }),
+  SERVICE_NAME: str({ default: "intmax2-e2e" }),
   SERVICE_VERSION: str({ default: version }),
   // contract
-  LIQUIDITY_CONTRACT_ADDRESS: str({ default: "0x1234" as const }),
+  LIQUIDITY_CONTRACT_ADDRESS: contractAddress(),
   // sdk
   ENVIRONMENT: str({ default: "testnet", choices: ["mainnet", "testnet"] as const }),
-  ETH_PRIVATE_KEY: str({ default: "0x1234" as const }),
-  L1_RPC_URL: str({}),
+  ETH_PRIVATE_KEY: ethPrivateKey(),
+  L1_RPC_URL: str(),
   // blockchain
   NETWORK_ENVIRONMENT: str({
     choices: ["mainnet", "sepolia"],
@@ -27,6 +28,7 @@ export const config = cleanEnv(process.env, {
     desc: "The environment of the blockchain network to connect to",
   }),
   ALCHEMY_API_KEY: str(),
+  BALANCE_PROVER_URL: str({ default: undefined }),
 });
 
 export const isProduction = config.NODE_ENV === "production";
