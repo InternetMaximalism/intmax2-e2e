@@ -15,12 +15,6 @@ export const config = cleanEnv(process.env, {
   }),
   SERVICE_NAME: str({ default: "intmax2-e2e" }),
   SERVICE_VERSION: str({ default: version }),
-  // contract
-  LIQUIDITY_CONTRACT_ADDRESS: contractAddress(),
-  // sdk
-  ENVIRONMENT: str({ default: "testnet", choices: ["mainnet", "testnet"] as const }),
-  ETH_PRIVATE_KEY: ethPrivateKey(),
-  L1_RPC_URL: str(),
   // blockchain
   NETWORK_ENVIRONMENT: str({
     choices: ["mainnet", "sepolia"],
@@ -28,6 +22,12 @@ export const config = cleanEnv(process.env, {
     desc: "The environment of the blockchain network to connect to",
   }),
   ALCHEMY_API_KEY: str(),
+  // contract
+  LIQUIDITY_CONTRACT_ADDRESS: contractAddress(),
+  // sdk
+  ENVIRONMENT: str({ default: "testnet", choices: ["mainnet", "testnet"] as const }),
+  ETH_PRIVATE_KEY: ethPrivateKey(),
+  L1_RPC_URL: str(),
   BALANCE_PROVER_URL: str({ default: undefined }),
 });
 

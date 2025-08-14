@@ -27,9 +27,11 @@ yarn workspace e2e dev
 ```
 
 ## TODO
+
 - Examples
 - remove debug log
-- withdraw
+- withdraw(token update)
+- Time API
 
 ```sh
 TransactionReceiptNotFoundError: Transaction receipt with hash "0xdb922d461a5919225922f2fa4821bb8a160b759d80b2f28ea8123a7622b1ee22" could not be found. The Transaction may not be processed on a block yet.
