@@ -6,7 +6,7 @@ import {
   formatAndLogAddresses,
   formatAndLogINTMAXBalances,
   logEthereumBalance,
-} from "../lib/utils";
+} from "../lib/intmaxPrinter";
 
 export const performJob = async (): Promise<void> => {
   const intmaxClient = INTMAXClient.getInstance();
