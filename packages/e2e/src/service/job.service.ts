@@ -1,4 +1,5 @@
 import { logger } from "@intmax2-e2e/shared";
+import { ETH_TOKEN_INDEX } from "../constants";
 import { INTMAXClient } from "../lib/intmax";
 import {
   formatAndActivities,
@@ -6,7 +7,6 @@ import {
   formatAndLogINTMAXBalances,
   logEthereumBalance,
 } from "../lib/utils";
-import { ETH_TOKEN_INDEX } from "../constants";
 
 export const performJob = async (): Promise<void> => {
   const intmaxClient = INTMAXClient.getInstance();
@@ -22,8 +22,18 @@ export const performJob = async (): Promise<void> => {
 
   await fetchAllAccountActivity(intmaxClient);
 
-  const depositResult = await intmaxClient.deposit(ETH_TOKEN_INDEX, 0.00001);
-  logger.info(`Deposit TxHash: ${depositResult.txHash}`);
+  // const depositResult = await intmaxClient.deposit({
+  //   tokenIndex: ETH_TOKEN_INDEX,
+  //   amount: 0.01,
+  // });
+  // logger.info(`Deposit TxHash: ${depositResult.txHash}`);
+
+  // const withdrawResult = await intmaxClient.withdraw({
+  //   tokenIndex: ETH_TOKEN_INDEX,
+  //   amount: 0.000001,
+  //   recipient: intmaxClient.getAddresses()?.ethAddress!,
+  // });
+  // console.log(withdrawResult);
 };
 
 const fetchAllAccountActivity = async (intmaxClient: INTMAXClient) => {

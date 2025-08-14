@@ -1,6 +1,6 @@
 import { cleanEnv, num, str } from "envalid";
 import { version } from "../../../../package.json";
-import { ethPrivateKey, contractAddress } from "./utils";
+import { contractAddress, ethPrivateKey } from "./utils";
 
 export const config = cleanEnv(process.env, {
   // app

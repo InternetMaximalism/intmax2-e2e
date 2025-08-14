@@ -1,15 +1,8 @@
-import { TokenType, type Token } from "intmax2-server-sdk";
+import { type Token, TokenType } from "intmax2-server-sdk";
 import type { Account } from "viem/accounts";
 
-export interface DepositParams {
-  amount: number;
-  token: Token;
-  address: string;
-  isMining: boolean;
-}
-
 export interface ClientAddresses {
-  ethAddress: string;
+  ethAddress: `0x${string}`;
   intmaxAddress: string;
   account: Account;
 }
@@ -35,4 +28,15 @@ export interface AccountSummary {
   withdrawals: WithdrawalsSummary;
   transfers: number;
   transactions: number;
+}
+
+export interface DepositParams {
+  tokenIndex: number;
+  amount: number;
+}
+
+export interface WithdrawParams {
+  tokenIndex: number;
+  amount: number;
+  recipient: `0x${string}`;
 }

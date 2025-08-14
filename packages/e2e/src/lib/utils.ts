@@ -1,7 +1,6 @@
-import { Account } from "viem";
-import type { AccountSummary, ClientAddresses } from "./../types";
 import { logger } from "@intmax2-e2e/shared";
 import type { TokenBalance } from "intmax2-server-sdk";
+import type { AccountSummary, ClientAddresses } from "./../types";
 
 const formatTokenAmount = (amount: bigint, decimals: number) => {
   const divisor = BigInt(10) ** BigInt(decimals);

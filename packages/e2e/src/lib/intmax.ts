@@ -1,10 +1,16 @@
 import { config, createNetworkClient, LiquidityAbi, logger } from "@intmax2-e2e/shared";
-import { IntMaxNodeClient, TokenType, type Token, TransactionStatus } from "intmax2-server-sdk";
-import { formatEther, type PublicClient, type Abi } from "viem";
+import { IntMaxNodeClient, type Token, TokenType, TransactionStatus } from "intmax2-server-sdk";
+import { type Abi, formatEther, type PublicClient } from "viem";
 import type { Account } from "viem/accounts";
 import { privateKeyToAccount } from "viem/accounts";
-import type { ClientAddresses, DepositParams, TokenInfo, TokenInfoMap } from "../types";
-import { ETH_TOKEN_INDEX } from "../constants";
+import { ETH_TOKEN_INDEX, WITHDRAW_INTERVAL } from "../constants";
+import type {
+  ClientAddresses,
+  DepositParams,
+  TokenInfo,
+  TokenInfoMap,
+  WithdrawParams,
+} from "../types";
 
 export class INTMAXClient {
   private static instance: INTMAXClient;
@@ -132,10 +138,10 @@ export class INTMAXClient {
     return this.client.fetchWithdrawals();
   }
 
-  async deposit(tokenIndex: number, amount: number) {
+  async deposit({ tokenIndex, amount }: DepositParams) {
     const token = await this.getToken(tokenIndex);
 
-    const depositParams: DepositParams = {
+    const depositRequest = {
       amount,
       token,
       address: this.client.address,
@@ -144,13 +150,13 @@ export class INTMAXClient {
 
     try {
       const gas = await this.client.estimateDepositGas({
-        ...depositParams,
+        ...depositRequest,
         isGasEstimation: true,
         isMining: false,
       });
       logger.debug(`Estimated gas for deposit: ${gas.toString()}`);
 
-      const depositResult = await this.client.deposit(depositParams);
+      const depositResult = await this.client.deposit(depositRequest);
       if (depositResult.status !== TransactionStatus.Completed) {
         throw new Error("Deposit failed");
       }
@@ -158,9 +164,34 @@ export class INTMAXClient {
       return depositResult;
     } catch (error) {
       logger.error(
-        `Failed to deposit native token: ${error instanceof Error ? error.message : "Unknown error"}`,
+        `Failed to deposit token: ${error instanceof Error ? error.message : "Unknown error"}`,
       );
       throw error;
+    }
+  }
+
+  async withdraw({ tokenIndex, amount, recipient }: WithdrawParams) {
+    const token = await this.getToken(tokenIndex);
+    const withdrawRequest = {
+      amount,
+      token,
+      address: recipient,
+    };
+
+    const processingInterval = setInterval(() => {
+      logger.debug("withdrawal processing...");
+    }, WITHDRAW_INTERVAL);
+
+    try {
+      const withdrawResult = await this.client.withdraw(withdrawRequest);
+      return withdrawResult;
+    } catch (error) {
+      logger.error(
+        `Failed to withdraw token: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
+      throw error;
+    } finally {
+      clearInterval(processingInterval);
     }
   }
 
@@ -201,6 +232,7 @@ export class INTMAXClient {
     if (!token) {
       throw new Error(`Token with index ${tokenIndex} not found`);
     }
+
     return this.formatToken(token);
   }
 
@@ -210,7 +242,12 @@ export class INTMAXClient {
     }
 
     const tokenInfoMap = await this.fetchTokenInfos([tokenIndex]);
-    return tokenInfoMap.get(tokenIndex)?.tokenType!;
+    const tokenType = tokenInfoMap.get(tokenIndex)?.tokenType;
+    if (!tokenType) {
+      throw new Error(`Token type for index ${tokenIndex} not found`);
+    }
+
+    return tokenType;
   }
 
   private async formatToken({ tokenIndex, decimals, contractAddress, price }: Token) {
@@ -224,9 +261,9 @@ export class INTMAXClient {
     };
   }
 
-  getAddresses(): ClientAddresses | null {
+  getAddresses(): ClientAddresses {
     if (!this.isLoggedIn) {
-      return null;
+      throw new Error("Client is not logged in");
     }
 
     return {
