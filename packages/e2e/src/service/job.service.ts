@@ -28,12 +28,13 @@ export const performJob = async (): Promise<void> => {
   // });
   // logger.info(`Deposit TxHash: ${depositResult.txHash}`);
 
-  const withdrawResult = await intmaxClient.withdraw({
-    tokenIndex: ETH_TOKEN_INDEX,
-    amount: 0.000001,
-    recipient: intmaxClient.getAddresses()?.ethAddress!,
-  });
-  console.log(withdrawResult);
+  // NOTE: It sometimes takes 6 minutes.
+  // const withdrawResult = await intmaxClient.withdraw({
+  //   tokenIndex: ETH_TOKEN_INDEX,
+  //   amount: 0.000001,
+  //   recipient: intmaxClient.getAddresses()?.ethAddress!,
+  // });
+  // console.log(withdrawResult);
 };
 
 const fetchAllAccountActivity = async (intmaxClient: INTMAXClient) => {
