@@ -3,12 +3,13 @@ import { IntMaxNodeClient, type Token, TokenType, TransactionStatus } from "intm
 import { type Abi, formatEther, type PublicClient } from "viem";
 import type { Account } from "viem/accounts";
 import { privateKeyToAccount } from "viem/accounts";
-import { ETH_TOKEN_INDEX, WITHDRAW_INTERVAL } from "../constants";
+import { ETH_TOKEN_INDEX, TRANSFER_INTERVAL, WITHDRAW_INTERVAL } from "../constants";
 import type {
   ClientAddresses,
   DepositParams,
   TokenInfo,
   TokenInfoMap,
+  TransferParams,
   WithdrawParams,
 } from "../types";
 
@@ -194,6 +195,35 @@ export class INTMAXClient {
       clearInterval(processingInterval);
     }
   }
+
+  async transfer(transferParams: TransferParams[]) {
+    await this.fetchTokenInfos(transferParams.map(({ tokenIndex }) => tokenIndex));
+
+    const transferPromises = transferParams.map(async ({ amount, tokenIndex, recipient }) => ({
+      amount,
+      token: await this.getToken(tokenIndex),
+      address: recipient,
+    }));
+    const transferRequests = await Promise.all(transferPromises);
+
+    const processingInterval = setInterval(() => {
+      logger.debug("transfer processing...");
+    }, TRANSFER_INTERVAL);
+
+    try {
+      const transferResult = await this.client.broadcastTransaction(transferRequests);
+      return transferResult;
+    } catch (error) {
+      logger.error(
+        `Failed to transfer tokens: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
+      throw error;
+    } finally {
+      clearInterval(processingInterval);
+    }
+  }
+
+  // async claimWithdrawal() {}
 
   async fetchTokenInfos(tokenIndices: number[]) {
     const uniqueIndices = Array.from(new Set(tokenIndices));

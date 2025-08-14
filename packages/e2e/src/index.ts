@@ -1,4 +1,4 @@
-import { cleanup, logger, timeOperation } from "@intmax2-e2e/shared";
+import { logger, timeOperation } from "@intmax2-e2e/shared";
 import { name } from "../package.json";
 import { performJob } from "./service/job.service";
 
@@ -10,7 +10,6 @@ async function main() {
     process.exit(0);
   } catch (error) {
     logger.error(error);
-    await cleanup();
     process.exit(1);
   }
 }

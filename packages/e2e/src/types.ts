@@ -40,3 +40,9 @@ export interface WithdrawParams {
   amount: number;
   recipient: `0x${string}`;
 }
+
+export interface TransferParams {
+  tokenIndex: number;
+  amount: number;
+  recipient: string;
+}

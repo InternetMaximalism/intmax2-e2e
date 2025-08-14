@@ -32,9 +32,18 @@ export const performJob = async (): Promise<void> => {
   // const withdrawResult = await intmaxClient.withdraw({
   //   tokenIndex: ETH_TOKEN_INDEX,
   //   amount: 0.000001,
-  //   recipient: intmaxClient.getAddresses()?.ethAddress!,
+  //   recipient: intmaxClient.getAddresses()?.ethAddress,
   // });
-  // console.log(withdrawResult);
+  // logger.info(`TxRoot ${withdrawResult.txTreeRoot}`);
+
+  // const transferResult = await intmaxClient.transfer([
+  //   {
+  //     amount: 0.00001,
+  //     tokenIndex: ETH_TOKEN_INDEX,
+  //     recipient: intmaxClient.getAddresses()?.intmaxAddress,
+  //   },
+  // ]);
+  // logger.info(`TxRoot ${transferResult.txTreeRoot}`);
 };
 
 const fetchAllAccountActivity = async (intmaxClient: INTMAXClient) => {
