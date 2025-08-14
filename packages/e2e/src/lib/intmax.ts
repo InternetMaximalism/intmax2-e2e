@@ -3,7 +3,7 @@ import { IntMaxNodeClient, TokenType, type Token, TransactionStatus } from "intm
 import { formatEther, type PublicClient, type Abi } from "viem";
 import type { Account } from "viem/accounts";
 import { privateKeyToAccount } from "viem/accounts";
-import type { ClientAddresses, DepositParams, TokenInfo } from "../types";
+import type { ClientAddresses, DepositParams, TokenInfo, TokenInfoMap } from "../types";
 import { ETH_TOKEN_INDEX } from "../constants";
 
 export class INTMAXClient {
@@ -12,6 +12,7 @@ export class INTMAXClient {
   private account: Account;
   private isLoggedIn: boolean = false;
   private availableTokens: Token[] = [];
+  private tokenInfoMap: TokenInfoMap = new Map();
   private ethereumClient: PublicClient;
 
   constructor() {
@@ -114,8 +115,25 @@ export class INTMAXClient {
     }
   }
 
-  async depositNativeToken(amount: number) {
-    const token = await this.getNativeToken();
+  // TODO: pagination
+  async fetchDeposits() {
+    return this.client.fetchDeposits();
+  }
+
+  async fetchTransfers() {
+    return this.client.fetchTransfers();
+  }
+
+  async fetchTransactions() {
+    return this.client.fetchTransactions();
+  }
+
+  async fetchWithdrawals() {
+    return this.client.fetchWithdrawals();
+  }
+
+  async deposit(tokenIndex: number, amount: number) {
+    const token = await this.getToken(tokenIndex);
 
     const depositParams: DepositParams = {
       amount,
@@ -125,7 +143,6 @@ export class INTMAXClient {
     };
 
     try {
-      logger.debug("Preparing deposit...");
       const gas = await this.client.estimateDepositGas({
         ...depositParams,
         isGasEstimation: true,
@@ -147,32 +164,44 @@ export class INTMAXClient {
     }
   }
 
-  // TODO: multicall and cache
-  private async getTokenInfo(tokenIndex: number) {
-    const result = await this.ethereumClient.readContract({
-      address: config.LIQUIDITY_CONTRACT_ADDRESS as `0x${string}`,
-      abi: LiquidityAbi as Abi,
-      functionName: "getTokenInfo",
-      args: [BigInt(tokenIndex)],
+  async fetchTokenInfos(tokenIndices: number[]) {
+    const uniqueIndices = Array.from(new Set(tokenIndices));
+
+    const missingIndices = uniqueIndices.filter((index) => !this.tokenInfoMap.has(index));
+
+    if (missingIndices.length === 0) {
+      return this.tokenInfoMap;
+    }
+
+    const results = await this.ethereumClient.multicall({
+      contracts: missingIndices.map((tokenIndex) => ({
+        address: config.LIQUIDITY_CONTRACT_ADDRESS,
+        abi: LiquidityAbi as Abi,
+        functionName: "getTokenInfo",
+        args: [BigInt(tokenIndex)],
+      })),
     });
-    return result as TokenInfo;
+
+    if (results.some((result) => result.status !== "success")) {
+      throw new Error("One or more token info requests failed");
+    }
+
+    results.forEach((result) => {
+      const tokenInfo = result.result as TokenInfo;
+      this.tokenInfoMap.set(Number(tokenInfo.tokenId), {
+        tokenType: tokenInfo.tokenType,
+      });
+    });
+
+    return this.tokenInfoMap;
   }
 
-  async getNativeToken() {
-    if (!this.isLoggedIn) {
-      throw new Error("Client is not logged in. Please call login() first.");
+  async getToken(tokenIndex: number) {
+    const token = this.availableTokens.find((token) => token.tokenIndex === tokenIndex);
+    if (!token) {
+      throw new Error(`Token with index ${tokenIndex} not found`);
     }
-
-    if (this.availableTokens.length === 0) {
-      throw new Error("No available tokens found.");
-    }
-
-    const nativeToken = this.availableTokens.find((token) => token.tokenIndex === ETH_TOKEN_INDEX);
-    if (!nativeToken) {
-      throw new Error("Native token not found in available tokens.");
-    }
-
-    return this.formatToken(nativeToken);
+    return this.formatToken(token);
   }
 
   private async getTokenType(tokenIndex: number) {
@@ -180,8 +209,8 @@ export class INTMAXClient {
       return TokenType.NATIVE;
     }
 
-    const { tokenType } = await this.getTokenInfo(tokenIndex);
-    return tokenType;
+    const tokenInfoMap = await this.fetchTokenInfos([tokenIndex]);
+    return tokenInfoMap.get(tokenIndex)?.tokenType!;
   }
 
   private async formatToken({ tokenIndex, decimals, contractAddress, price }: Token) {

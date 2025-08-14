@@ -1,4 +1,5 @@
-import type { ClientAddresses } from "./../types";
+import { Account } from "viem";
+import type { AccountSummary, ClientAddresses } from "./../types";
 import { logger } from "@intmax2-e2e/shared";
 import type { TokenBalance } from "intmax2-server-sdk";
 
@@ -27,7 +28,7 @@ export const formatAndLogINTMAXBalances = (balances: TokenBalance[]) => {
     return;
   }
 
-  let output = "📊 Token Balances:\n";
+  let output = "Token Balances:\n";
   output += "─".repeat(80) + "\n";
 
   balances.forEach((balance, index) => {
@@ -55,7 +56,7 @@ export const formatAndLogINTMAXBalances = (balances: TokenBalance[]) => {
     return total + usdValue;
   }, 0);
 
-  output += `💰 Total Portfolio Value: $${totalUsdValue.toFixed(2)}`;
+  output += `Total Portfolio Value: $${totalUsdValue.toFixed(2)}`;
 
   logger.info(output);
 };
@@ -70,9 +71,44 @@ export const formatAndLogAddresses = (addresses: ClientAddresses | null) => {
     return;
   }
 
-  const output = `📍 Client Addresses:
+  const output = `Client Addresses:
 ETH Address: ${addresses.ethAddress}
 INTMAX Address: ${addresses.intmaxAddress}`;
+
+  logger.info(output);
+};
+
+export const formatAndActivities = ({
+  deposits,
+  withdrawals,
+  transfers,
+  transactions,
+}: AccountSummary) => {
+  let output = "═".repeat(80) + "\n";
+  output += "                    ACCOUNT ACTIVITY SUMMARY\n";
+  output += "═".repeat(80) + "\n";
+
+  output += `DEPOSITS\n`;
+  output += `   Total Count: ${deposits}\n`;
+  output += "─".repeat(40) + "\n";
+
+  output += `WITHDRAWALS\n`;
+  output += `   Failed: ${withdrawals.failed}\n`;
+  output += `   Need Claim: ${withdrawals.need_claim}\n`;
+  output += `   Relayed: ${withdrawals.relayed}\n`;
+  output += `   Requested: ${withdrawals.requested}\n`;
+  output += `   Success: ${withdrawals.success}\n`;
+
+  output += "─".repeat(40) + "\n";
+
+  output += `TRANSFERS\n`;
+  output += `   Total Count: ${transfers}\n`;
+  output += "─".repeat(40) + "\n";
+
+  output += `TRANSACTIONS\n`;
+  output += `   Total Count: ${transactions}\n`;
+
+  output += "═".repeat(80) + "\n";
 
   logger.info(output);
 };
