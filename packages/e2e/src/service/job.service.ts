@@ -65,8 +65,8 @@ const fetchAllAccountActivity = async (intmaxClient: INTMAXClient) => {
   const accountSummary = {
     deposits: deposits.pagination.total_count,
     withdrawals: withdrawalsSummary,
-    transfers: transfers.pagination.total_count,
-    transactions: transactions.pagination.total_count,
+    transfers: transfers.pagination.total_count, // receive
+    transactions: transactions.pagination.total_count, // send
   };
 
   formatAndActivities(accountSummary);
