@@ -245,7 +245,7 @@ export class INTMAXClient {
     return this.formatToken(token);
   }
 
-  getAddresses(): ClientAddresses {
+  getAddresses() {
     if (!this.isLoggedIn) {
       throw new Error("Client is not logged in");
     }
