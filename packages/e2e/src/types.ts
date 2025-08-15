@@ -1,4 +1,4 @@
-import { type Token, TokenType } from "intmax2-server-sdk";
+import { TokenType } from "intmax2-server-sdk";
 import type { Account } from "viem/accounts";
 
 export interface ClientAddresses {

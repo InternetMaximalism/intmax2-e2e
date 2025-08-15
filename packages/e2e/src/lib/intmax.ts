@@ -68,27 +68,6 @@ export class INTMAXClient {
     }
   }
 
-  private async loadAvailableTokens(): Promise<void> {
-    try {
-      logger.debug("Loading available tokens...");
-      const tokens = await this.client.getTokensList();
-
-      if (!tokens || (Array.isArray(tokens) && tokens.length === 0)) {
-        logger.info("No tokens available");
-        this.availableTokens = [];
-        return;
-      }
-
-      this.availableTokens = tokens;
-      logger.debug(`Available tokens loaded: ${tokens.length}`);
-    } catch (error) {
-      logger.error(
-        `Failed to load available tokens: ${error instanceof Error ? error.message : "Unknown error"}`,
-      );
-      throw error;
-    }
-  }
-
   async fetchEthereumBalance() {
     try {
       const balance = await this.ethereumClient.getBalance({ address: this.account.address });
@@ -266,6 +245,18 @@ export class INTMAXClient {
     return this.formatToken(token);
   }
 
+  getAddresses(): ClientAddresses {
+    if (!this.isLoggedIn) {
+      throw new Error("Client is not logged in");
+    }
+
+    return {
+      ethAddress: this.account.address,
+      intmaxAddress: this.client.address,
+      account: this.account,
+    };
+  }
+
   private async getTokenType(tokenIndex: number) {
     if (tokenIndex === ETH_TOKEN_INDEX) {
       return TokenType.NATIVE;
@@ -291,15 +282,24 @@ export class INTMAXClient {
     };
   }
 
-  getAddresses(): ClientAddresses {
-    if (!this.isLoggedIn) {
-      throw new Error("Client is not logged in");
-    }
+  private async loadAvailableTokens() {
+    try {
+      logger.debug("Loading available tokens...");
+      const tokens = await this.client.getTokensList();
 
-    return {
-      ethAddress: this.account.address,
-      intmaxAddress: this.client.address,
-      account: this.account,
-    };
+      if (!tokens || (Array.isArray(tokens) && tokens.length === 0)) {
+        logger.info("No tokens available");
+        this.availableTokens = [];
+        return;
+      }
+
+      this.availableTokens = tokens;
+      logger.debug(`Available tokens loaded: ${tokens.length}`);
+    } catch (error) {
+      logger.error(
+        `Failed to load available tokens: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
+      throw error;
+    }
   }
 }
