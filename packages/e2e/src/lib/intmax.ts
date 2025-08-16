@@ -86,6 +86,7 @@ export class INTMAXClient {
     try {
       logger.debug("Fetching INTMAX token balances...");
       const { balances } = await this.client.fetchTokenBalances();
+      console.log("balances", balances);
 
       if (balances.length === 0) {
         logger.info("No token balances found");
@@ -150,31 +151,6 @@ export class INTMAXClient {
     }
   }
 
-  async withdraw({ tokenIndex, amount, recipient }: WithdrawParams) {
-    const token = await this.getToken(tokenIndex);
-    const withdrawRequest = {
-      amount,
-      token,
-      address: recipient,
-    };
-
-    const processingInterval = setInterval(() => {
-      logger.debug("withdrawal processing...");
-    }, WITHDRAW_INTERVAL);
-
-    try {
-      const withdrawResult = await this.client.withdraw(withdrawRequest);
-      return withdrawResult;
-    } catch (error) {
-      logger.error(
-        `Failed to withdraw token: ${error instanceof Error ? error.message : "Unknown error"}`,
-      );
-      throw error;
-    } finally {
-      clearInterval(processingInterval);
-    }
-  }
-
   async transfer(transferParams: TransferParams[]) {
     await this.fetchTokenInfos(transferParams.map(({ tokenIndex }) => tokenIndex));
 
@@ -195,6 +171,31 @@ export class INTMAXClient {
     } catch (error) {
       logger.error(
         `Failed to transfer tokens: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
+      throw error;
+    } finally {
+      clearInterval(processingInterval);
+    }
+  }
+
+  async withdraw({ tokenIndex, amount, recipient }: WithdrawParams) {
+    const token = await this.getToken(tokenIndex);
+    const withdrawRequest = {
+      amount,
+      token,
+      address: recipient,
+    };
+
+    const processingInterval = setInterval(() => {
+      logger.debug("withdrawal processing...");
+    }, WITHDRAW_INTERVAL);
+
+    try {
+      const withdrawResult = await this.client.withdraw(withdrawRequest);
+      return withdrawResult;
+    } catch (error) {
+      logger.error(
+        `Failed to withdraw token: ${error instanceof Error ? error.message : "Unknown error"}`,
       );
       throw error;
     } finally {
@@ -271,17 +272,6 @@ export class INTMAXClient {
     return tokenType;
   }
 
-  private async formatToken({ tokenIndex, decimals, contractAddress, price }: Token) {
-    const tokenType = await this.getTokenType(tokenIndex);
-    return {
-      tokenType,
-      tokenIndex,
-      decimals,
-      contractAddress,
-      price,
-    };
-  }
-
   private async loadAvailableTokens() {
     try {
       logger.debug("Loading available tokens...");
@@ -301,5 +291,17 @@ export class INTMAXClient {
       );
       throw error;
     }
+  }
+
+  private async formatToken({ tokenIndex, decimals, contractAddress, price }: Token) {
+    const tokenType = await this.getTokenType(tokenIndex);
+
+    return {
+      tokenType,
+      tokenIndex,
+      decimals,
+      contractAddress,
+      price,
+    };
   }
 }
