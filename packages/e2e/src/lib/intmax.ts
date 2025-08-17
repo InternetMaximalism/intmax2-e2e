@@ -193,7 +193,7 @@ export class INTMAXClient {
       requested: [],
       success: [],
     };
-    let cursor: string | null = null;
+    let cursor: bigint | null = null;
     let response: FetchWithdrawalsResponse;
 
     do {
@@ -207,7 +207,7 @@ export class INTMAXClient {
         });
       }
 
-      cursor = response?.pagination?.next_cursor?.toString() || null;
+      cursor = response?.pagination?.next_cursor || null;
     } while (response?.pagination?.has_more);
 
     return allWithdrawals;
@@ -239,7 +239,7 @@ export class INTMAXClient {
       return depositResult;
     } catch (error) {
       logger.error(
-        `Failed to deposit token: ${error instanceof Error ? error.message : "Unknown error"}`,
+        `Failed to deposit: ${error instanceof Error ? error.message : "Unknown error"}`,
       );
       throw error;
     }
@@ -264,7 +264,7 @@ export class INTMAXClient {
       return transferResult;
     } catch (error) {
       logger.error(
-        `Failed to transfer tokens: ${error instanceof Error ? error.message : "Unknown error"}`,
+        `Failed to transfer: ${error instanceof Error ? error.message : "Unknown error"}`,
       );
       throw error;
     } finally {
@@ -289,7 +289,7 @@ export class INTMAXClient {
       return withdrawResult;
     } catch (error) {
       logger.error(
-        `Failed to withdraw token: ${error instanceof Error ? error.message : "Unknown error"}`,
+        `Failed to withdrawal: ${error instanceof Error ? error.message : "Unknown error"}`,
       );
       throw error;
     } finally {
@@ -297,7 +297,23 @@ export class INTMAXClient {
     }
   }
 
-  // async claimWithdrawal() {}
+  async claimWithdrawal(needClaims: ContractWithdrawal[]) {
+    const processingInterval = setInterval(() => {
+      logger.debug("claim withdrawal processing...");
+    }, WITHDRAW_INTERVAL);
+
+    try {
+      const claimWithdrawResult = await this.client.claimWithdrawal(needClaims);
+      return claimWithdrawResult;
+    } catch (error) {
+      logger.error(
+        `Failed to claim withdrawal: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
+      throw error;
+    } finally {
+      clearInterval(processingInterval);
+    }
+  }
 
   async fetchTokenInfos(tokenIndices: number[]) {
     const uniqueIndices = Array.from(new Set(tokenIndices));
