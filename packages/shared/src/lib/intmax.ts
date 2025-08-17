@@ -1,4 +1,3 @@
-import { config, createNetworkClient, LiquidityAbi, logger } from "@intmax2-e2e/shared";
 import {
   FetchTransactionsRequest,
   FetchWithdrawalsResponse,
@@ -20,6 +19,10 @@ import type {
   TransferParams,
   WithdrawParams,
 } from "../types";
+import { logger } from "./logger";
+import { LiquidityAbi } from "../abi";
+import { createNetworkClient } from "../blockchain";
+import { config } from "../config";
 
 export class INTMAXClient {
   private static instance: INTMAXClient;

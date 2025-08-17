@@ -3,9 +3,8 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "dependencies": {
-    "abitype": "^1.0.8",
     "envalid": "^8.1.0",
-    "ethers": "6.15.0",
+    "intmax2-server-sdk": "^1.4.6",
     "pino": "^9.8.0",
     "pino-pretty": "^13.1.1",
     "viem": "^2.33.3"

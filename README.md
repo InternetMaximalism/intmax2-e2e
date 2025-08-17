@@ -22,13 +22,21 @@ yarn build:shared
 Start the processor or job service in development mode:
 
 ```sh
-# e2e
-yarn workspace e2e dev
+# activity
+yarn workspace activity dev
+
+# deposit
+yarn workspace deposit dev
+
+# withdraw
+yarn workspace withdraw dev
+
+# transfer
+yarn workspace transfer dev
 ```
 
 ## TODO
 
-- Examples
 - remove debug log
 - withdraw(token update)
 - Time API

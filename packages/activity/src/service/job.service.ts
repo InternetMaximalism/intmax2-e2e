@@ -1,12 +1,10 @@
-import { logger } from "@intmax2-e2e/shared";
-import { ETH_TOKEN_INDEX } from "../constants";
-import { INTMAXClient } from "../lib/intmax";
 import {
-  formatAndActivities,
+  INTMAXClient,
   formatAndLogAddresses,
-  formatAndLogINTMAXBalances,
+  formatAndActivities,
   logEthereumBalance,
-} from "../lib/intmaxPrinter";
+  formatAndLogINTMAXBalances,
+} from "@intmax2-e2e/shared";
 
 export const performJob = async (): Promise<void> => {
   const intmaxClient = INTMAXClient.getInstance();
@@ -21,29 +19,6 @@ export const performJob = async (): Promise<void> => {
   formatAndLogINTMAXBalances(intmaxBalances);
 
   await fetchAllAccountActivity(intmaxClient);
-
-  // const depositResult = await intmaxClient.deposit({
-  //   tokenIndex: ETH_TOKEN_INDEX,
-  //   amount: 0.01,
-  // });
-  // logger.info(`Deposit TxHash: ${depositResult.txHash}`);
-
-  // NOTE: It sometimes takes 6 minutes.
-  // const withdrawResult = await intmaxClient.withdraw({
-  //   tokenIndex: ETH_TOKEN_INDEX,
-  //   amount: 0.000001,
-  //   recipient: intmaxClient.getAddresses()?.ethAddress,
-  // });
-  // logger.info(`TxRoot ${withdrawResult.txTreeRoot}`);
-
-  // const transferResult = await intmaxClient.transfer([
-  //   {
-  //     amount: 0.00001,
-  //     tokenIndex: ETH_TOKEN_INDEX,
-  //     recipient: intmaxClient.getAddresses()?.intmaxAddress,
-  //   },
-  // ]);
-  // logger.info(`TxRoot ${transferResult.txTreeRoot}`);
 };
 
 const fetchAllAccountActivity = async (intmaxClient: INTMAXClient) => {

@@ -1,10 +1,8 @@
 {
-  "name": "e2e",
+  "name": "deposit",
   "version": "1.0.0",
   "dependencies": {
-    "@intmax2-e2e/shared": "workspace:*",
-    "intmax2-server-sdk": "^1.4.6",
-    "viem": "^2.33.3"
+    "@intmax2-e2e/shared": "workspace:*"
   },
   "scripts": {
     "start": "node dist/index.js",

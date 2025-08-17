@@ -344,6 +344,7 @@ __metadata:
     abitype: "npm:^1.0.8"
     envalid: "npm:^8.1.0"
     ethers: "npm:6.15.0"
+    intmax2-server-sdk: "npm:^1.4.6"
     pino: "npm:^9.8.0"
     pino-pretty: "npm:^13.1.1"
     typescript: "npm:^5.9.2"
@@ -840,6 +841,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"activity@workspace:packages/activity":
+  version: 0.0.0-use.local
+  resolution: "activity@workspace:packages/activity"
+  dependencies:
+    "@intmax2-e2e/shared": "workspace:*"
+    intmax2-server-sdk: "npm:^1.4.6"
+    tsx: "npm:^4.20.4"
+    typescript: "npm:^5.9.2"
+    viem: "npm:^2.33.3"
+    vitest: "npm:^3.2.4"
+  languageName: unknown
+  linkType: soft
+
 "aes-js@npm:4.0.0-beta.5":
   version: 4.0.0-beta.5
   resolution: "aes-js@npm:4.0.0-beta.5"
@@ -1094,6 +1108,17 @@ __metadata:
   checksum: 10c0/d758899da03392e6712f042bec80aa293bbe9e9ff1b2634baae6a360113e708b91326594c8a486d475c69d6259afb7efacdc3537bfcda1c6c648e390ce601b19
   languageName: node
   linkType: hard
+
+"deposit@workspace:packages/deposit":
+  version: 0.0.0-use.local
+  resolution: "deposit@workspace:packages/deposit"
+  dependencies:
+    "@intmax2-e2e/shared": "workspace:*"
+    tsx: "npm:^4.20.4"
+    typescript: "npm:^5.9.2"
+    vitest: "npm:^3.2.4"
+  languageName: unknown
+  linkType: soft
 
 "dotenv@npm:^17.2.1":
   version: 17.2.1
@@ -2610,6 +2635,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"transfer@workspace:packages/transfer":
+  version: 0.0.0-use.local
+  resolution: "transfer@workspace:packages/transfer"
+  dependencies:
+    "@intmax2-e2e/shared": "workspace:*"
+    intmax2-server-sdk: "npm:^1.4.6"
+    tsx: "npm:^4.20.4"
+    typescript: "npm:^5.9.2"
+    viem: "npm:^2.33.3"
+    vitest: "npm:^3.2.4"
+  languageName: unknown
+  linkType: soft
+
 "tslib@npm:2.7.0":
   version: 2.7.0
   resolution: "tslib@npm:2.7.0"
@@ -2865,6 +2903,19 @@ __metadata:
   checksum: 10c0/1cde0b01b827d2cf4cb11db962f3958b9175d5d9e7ac7361d1a7b0e2dc6069a263e69118bd974c4f6d0a890ef4eedfe34cf3d5167ec14203dbc9a18620537054
   languageName: node
   linkType: hard
+
+"withdraw@workspace:packages/withdraw":
+  version: 0.0.0-use.local
+  resolution: "withdraw@workspace:packages/withdraw"
+  dependencies:
+    "@intmax2-e2e/shared": "workspace:*"
+    intmax2-server-sdk: "npm:^1.4.6"
+    tsx: "npm:^4.20.4"
+    typescript: "npm:^5.9.2"
+    viem: "npm:^2.33.3"
+    vitest: "npm:^3.2.4"
+  languageName: unknown
+  linkType: soft
 
 "wrap-ansi-cjs@npm:wrap-ansi@^7.0.0":
   version: 7.0.0
