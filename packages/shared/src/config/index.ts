@@ -1,6 +1,6 @@
 import { cleanEnv, str } from "envalid";
 import { version } from "../../../../package.json";
-import { contractAddress, ethPrivateKey } from "./validtor";
+import { contractAddress, ethPrivateKey, rpcUrls } from "./validtor";
 
 export const config = cleanEnv(process.env, {
   // app
@@ -19,7 +19,7 @@ export const config = cleanEnv(process.env, {
   // sdk
   NETWORK_ENVIRONMENT: str({ default: "testnet", choices: ["mainnet", "testnet"] as const }),
   ETH_PRIVATE_KEY: ethPrivateKey(),
-  L1_RPC_URL: str(),
+  L1_RPC_URLS: rpcUrls(),
   BALANCE_PROVER_URL: str({ default: undefined }),
 });
 

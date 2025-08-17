@@ -32,12 +32,13 @@ export class INTMAXClient {
   private availableTokens: Map<number, Token> = new Map();
   private tokenInfoMap: TokenInfoMap = new Map();
   private ethereumClient: PublicClient;
+  private currentRpcIndex: number = 0;
 
   constructor() {
     const clientConfig = {
       environment: config.NETWORK_ENVIRONMENT,
       eth_private_key: config.ETH_PRIVATE_KEY,
-      l1_rpc_url: config.L1_RPC_URL,
+      l1_rpc_url: config.L1_RPC_URLS[this.currentRpcIndex],
       ...(config.BALANCE_PROVER_URL && {
         urls: {
           balance_prover_url: config.BALANCE_PROVER_URL,

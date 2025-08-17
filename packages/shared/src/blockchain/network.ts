@@ -1,4 +1,4 @@
-import { type Chain, createPublicClient, http, type PublicClient } from "viem";
+import { type Chain, createPublicClient, fallback, http, type PublicClient } from "viem";
 import { mainnet, sepolia } from "viem/chains";
 import { config } from "../config";
 
@@ -11,6 +11,8 @@ export const networkConfig = {
   },
 };
 
+const rpcs = config.L1_RPC_URLS.map((rpc) => http(rpc));
+
 export const createNetworkClient = () => {
   const { chain } = networkConfig[config.NETWORK_ENVIRONMENT];
 
@@ -19,6 +21,6 @@ export const createNetworkClient = () => {
       multicall: true,
     },
     chain: chain as Chain,
-    transport: http(config.L1_RPC_URL),
+    transport: fallback(rpcs),
   }) as PublicClient;
 };

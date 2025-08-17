@@ -340,7 +340,6 @@ __metadata:
     pino-pretty: "npm:^13.1.1"
     typescript: "npm:^5.9.2"
     viem: "npm:^2.33.3"
-    vitest: "npm:^3.2.4"
   languageName: unknown
   linkType: soft
 
