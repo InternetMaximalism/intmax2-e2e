@@ -336,7 +336,7 @@ __metadata:
   dependencies:
     envalid: "npm:^8.1.0"
     intmax2-server-sdk: "npm:^1.4.6"
-    pino: "npm:^9.8.0"
+    pino: "npm:^9.9.0"
     pino-pretty: "npm:^13.1.1"
     typescript: "npm:^5.9.2"
     viem: "npm:^2.33.3"
@@ -672,6 +672,15 @@ __metadata:
   version: 1.0.7
   resolution: "@types/estree@npm:1.0.7"
   checksum: 10c0/be815254316882f7c40847336cd484c3bc1c3e34f710d197160d455dc9d6d050ffbf4c3bc76585dba86f737f020ab20bdb137ebe0e9116b0c86c7c0342221b8c
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^24.3.0":
+  version: 24.3.0
+  resolution: "@types/node@npm:24.3.0"
+  dependencies:
+    undici-types: "npm:~7.10.0"
+  checksum: 10c0/96bdeca01f690338957c2dcc92cb9f76c262c10398f8d91860865464412b0f9d309c24d9b03d0bdd26dd47fa7ee3f8227893d5c89bc2009d919a525a22512030
   languageName: node
   linkType: hard
 
@@ -1589,6 +1598,7 @@ __metadata:
   resolution: "intmax2-e2e@workspace:."
   dependencies:
     "@biomejs/biome": "npm:2.2.0"
+    "@types/node": "npm:^24.3.0"
     "@vitest/coverage-v8": "npm:^3.2.4"
     dotenv: "npm:^17.2.1"
     typescript: "npm:^5.9.2"
@@ -2103,9 +2113,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pino@npm:^9.8.0":
-  version: 9.8.0
-  resolution: "pino@npm:9.8.0"
+"pino@npm:^9.9.0":
+  version: 9.9.0
+  resolution: "pino@npm:9.9.0"
   dependencies:
     atomic-sleep: "npm:^1.0.0"
     fast-redact: "npm:^3.1.1"
@@ -2120,7 +2130,7 @@ __metadata:
     thread-stream: "npm:^3.0.0"
   bin:
     pino: bin.js
-  checksum: 10c0/a6de40d8c777520a0f2bdd1727512db2dba51d0d8098500ec8326f1f95412e4e704ee4301287ccbbafbf7a7ab07999d5659333a7079d1b70341d0d69e4d40b29
+  checksum: 10c0/e2b05d4b1cf73447648ec98d247fd0f1f8020a819ebc2c97fab7fa8b9efe2d1a82ebf674ed2489bb7a1d3a75350c044c776f124e9c29c004bfb133b9e2ac0871
   languageName: node
   linkType: hard
 
@@ -2615,6 +2625,13 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 10c0/34d2a8e23eb8e0d1875072064d5e1d9c102e0bdce56a10a25c0b917b8aa9001a9cf5c225df12497e99da107dc379360bc138163c66b55b95f5b105b50578067e
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~7.10.0":
+  version: 7.10.0
+  resolution: "undici-types@npm:7.10.0"
+  checksum: 10c0/8b00ce50e235fe3cc601307f148b5e8fb427092ee3b23e8118ec0a5d7f68eca8cee468c8fc9f15cbb2cf2a3797945ebceb1cbd9732306a1d00e0a9b6afa0f635
   languageName: node
   linkType: hard
 
