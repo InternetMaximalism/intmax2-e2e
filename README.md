@@ -1,6 +1,6 @@
 # intmax2-e2e
 
-End-to-end testing suite for the INTMAX2 protocol. This repository contains comprehensive integration tests that verify the complete functionality of the INTMAX2 system, including wallet operations, token transfers, balance queries, and cross-chain interactions.
+End-to-end testing for the INTMAX network using TypeScript and Rust, covering integration, performance, and reliability checks to ensure smooth interaction between dApps and the network, including wallet operations, token transfers, balance queries, and cross-chain interactions.
 
 ## Setup
 
@@ -33,4 +33,28 @@ yarn workspace withdraw dev
 
 # transfer
 yarn workspace transfer dev
+```
+
+## Testing
+
+The project uses Vitest for testing. Run tests with the following commands:
+
+```sh
+# Run all tests
+yarn test
+
+# Run tests in watch mode
+yarn test --watch
+
+# Run tests with coverage report
+yarn coverage
+```
+
+## Docker
+
+Build and run the project in a Docker container:
+
+```sh
+docker build -f docker/Dockerfile -t intmax2-e2e .
+docker run --rm -p 3000:3000 --env-file .env intmax2-e2e workspace activity start
 ```
