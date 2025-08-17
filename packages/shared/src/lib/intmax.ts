@@ -1,7 +1,7 @@
 import {
   type ContractWithdrawal,
-  FetchTransactionsRequest,
-  FetchWithdrawalsResponse,
+  type FetchTransactionsRequest,
+  type FetchWithdrawalsResponse,
   IntMaxNodeClient,
   type Token,
   TokenType,
@@ -29,13 +29,13 @@ export class INTMAXClient {
   private client: IntMaxNodeClient;
   private account: Account;
   private isLoggedIn: boolean = false;
-  private availableTokens: Token[] = [];
+  private availableTokens: Map<number, Token> = new Map();
   private tokenInfoMap: TokenInfoMap = new Map();
   private ethereumClient: PublicClient;
 
   constructor() {
     const clientConfig = {
-      environment: config.ENVIRONMENT,
+      environment: config.NETWORK_ENVIRONMENT,
       eth_private_key: config.ETH_PRIVATE_KEY,
       l1_rpc_url: config.L1_RPC_URL,
       ...(config.BALANCE_PROVER_URL && {
@@ -48,7 +48,7 @@ export class INTMAXClient {
 
     this.client = new IntMaxNodeClient(clientConfig);
     this.account = privateKeyToAccount(config.ETH_PRIVATE_KEY);
-    this.ethereumClient = createNetworkClient("ethereum");
+    this.ethereumClient = createNetworkClient();
   }
 
   static getInstance() {
@@ -351,7 +351,7 @@ export class INTMAXClient {
   }
 
   async getToken(tokenIndex: number) {
-    const token = this.availableTokens.find((token) => token.tokenIndex === tokenIndex);
+    const token = this.availableTokens.get(tokenIndex);
     if (!token) {
       throw new Error(`Token with index ${tokenIndex} not found`);
     }
@@ -392,11 +392,15 @@ export class INTMAXClient {
 
       if (!tokens || (Array.isArray(tokens) && tokens.length === 0)) {
         logger.info("No tokens available");
-        this.availableTokens = [];
+        this.availableTokens.clear();
         return;
       }
 
-      this.availableTokens = tokens;
+      this.availableTokens.clear();
+      tokens.forEach((token) => {
+        this.availableTokens.set(token.tokenIndex, token);
+      });
+
       logger.debug(`Available tokens loaded: ${tokens.length}`);
     } catch (error) {
       logger.error(
