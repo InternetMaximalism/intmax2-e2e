@@ -1,4 +1,4 @@
-import { logger, INTMAXClient, ETH_TOKEN_INDEX, formatAndLogAddresses } from "@intmax2-e2e/shared";
+import { ETH_TOKEN_INDEX, formatAndLogAddresses, INTMAXClient, logger } from "@intmax2-e2e/shared";
 
 export const performJob = async (): Promise<void> => {
   const intmaxClient = INTMAXClient.getInstance();

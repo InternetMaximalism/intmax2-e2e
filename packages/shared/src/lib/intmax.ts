@@ -1,16 +1,19 @@
 import {
+  type ContractWithdrawal,
   FetchTransactionsRequest,
   FetchWithdrawalsResponse,
   IntMaxNodeClient,
   type Token,
   TokenType,
   TransactionStatus,
-  type ContractWithdrawal,
 } from "intmax2-server-sdk";
 import { type Abi, formatEther, type PublicClient } from "viem";
 import type { Account } from "viem/accounts";
 import { privateKeyToAccount } from "viem/accounts";
-import { ETH_TOKEN_INDEX, TRANSFER_INTERVAL, WITHDRAW_INTERVAL, MAX_LIMIT } from "../constants";
+import { LiquidityAbi } from "../abi";
+import { createNetworkClient } from "../blockchain";
+import { config } from "../config";
+import { ETH_TOKEN_INDEX, MAX_LIMIT, TRANSFER_INTERVAL, WITHDRAW_INTERVAL } from "../constants";
 import type {
   ClientAddresses,
   DepositParams,
@@ -20,9 +23,6 @@ import type {
   WithdrawParams,
 } from "../types";
 import { logger } from "./logger";
-import { LiquidityAbi } from "../abi";
-import { createNetworkClient } from "../blockchain";
-import { config } from "../config";
 
 export class INTMAXClient {
   private static instance: INTMAXClient;

@@ -1,9 +1,9 @@
 import {
-  INTMAXClient,
-  formatAndLogAddresses,
   formatAndActivities,
-  logEthereumBalance,
+  formatAndLogAddresses,
   formatAndLogINTMAXBalances,
+  INTMAXClient,
+  logEthereumBalance,
 } from "@intmax2-e2e/shared";
 
 export const performJob = async (): Promise<void> => {
