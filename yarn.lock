@@ -5,13 +5,6 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
-"@adraffy/ens-normalize@npm:1.10.1":
-  version: 1.10.1
-  resolution: "@adraffy/ens-normalize@npm:1.10.1"
-  checksum: 10c0/fdd647604e8fac6204921888aaf5a6bc65eabf0d2921bc5f93b64d01f4bc33ead167c1445f7de05468d05cd92ac31b74c68d2be840c62b79d73693308f885c06
-  languageName: node
-  linkType: hard
-
 "@adraffy/ens-normalize@npm:^1.11.0":
   version: 1.11.0
   resolution: "@adraffy/ens-normalize@npm:1.11.0"
@@ -341,10 +334,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@intmax2-e2e/shared@workspace:packages/shared"
   dependencies:
-    abitype: "npm:^1.0.8"
     envalid: "npm:^8.1.0"
-    ethers: "npm:6.15.0"
-    pino: "npm:^9.8.0"
+    intmax2-server-sdk: "npm:^1.4.6"
+    pino: "npm:^9.9.0"
     pino-pretty: "npm:^13.1.1"
     typescript: "npm:^5.9.2"
     viem: "npm:^2.33.3"
@@ -431,15 +423,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/curves@npm:1.2.0":
-  version: 1.2.0
-  resolution: "@noble/curves@npm:1.2.0"
-  dependencies:
-    "@noble/hashes": "npm:1.3.2"
-  checksum: 10c0/0bac7d1bbfb3c2286910b02598addd33243cb97c3f36f987ecc927a4be8d7d88e0fcb12b0f0ef8a044e7307d1844dd5c49bb724bfa0a79c8ec50ba60768c97f6
-  languageName: node
-  linkType: hard
-
 "@noble/curves@npm:1.9.2, @noble/curves@npm:^1.9.1":
   version: 1.9.2
   resolution: "@noble/curves@npm:1.9.2"
@@ -455,13 +438,6 @@ __metadata:
   dependencies:
     "@noble/hashes": "npm:1.8.0"
   checksum: 10c0/39c84dbfecdca80cfde2ecea4b06ef2ec1255a4df40158d22491d1400057a283f57b2b26c8b1331006e6e061db791f31d47764961c239437032e2f45e8888c1e
-  languageName: node
-  linkType: hard
-
-"@noble/hashes@npm:1.3.2":
-  version: 1.3.2
-  resolution: "@noble/hashes@npm:1.3.2"
-  checksum: 10c0/2482cce3bce6a596626f94ca296e21378e7a5d4c09597cbc46e65ffacc3d64c8df73111f2265444e36a3168208628258bbbaccba2ef24f65f58b2417638a20e7
   languageName: node
   linkType: hard
 
@@ -699,12 +675,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:22.7.5":
-  version: 22.7.5
-  resolution: "@types/node@npm:22.7.5"
+"@types/node@npm:^24.3.0":
+  version: 24.3.0
+  resolution: "@types/node@npm:24.3.0"
   dependencies:
-    undici-types: "npm:~6.19.2"
-  checksum: 10c0/cf11f74f1a26053ec58066616e3a8685b6bcd7259bc569738b8f752009f9f0f7f85a1b2d24908e5b0f752482d1e8b6babdf1fbb25758711ec7bb9500bfcd6e60
+    undici-types: "npm:~7.10.0"
+  checksum: 10c0/96bdeca01f690338957c2dcc92cb9f76c262c10398f8d91860865464412b0f9d309c24d9b03d0bdd26dd47fa7ee3f8227893d5c89bc2009d919a525a22512030
   languageName: node
   linkType: hard
 
@@ -840,12 +816,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"aes-js@npm:4.0.0-beta.5":
-  version: 4.0.0-beta.5
-  resolution: "aes-js@npm:4.0.0-beta.5"
-  checksum: 10c0/444f4eefa1e602cbc4f2a3c644bc990f93fd982b148425fee17634da510586fc09da940dcf8ace1b2d001453c07ff042e55f7a0482b3cc9372bf1ef75479090c
-  languageName: node
-  linkType: hard
+"activity@workspace:packages/activity":
+  version: 0.0.0-use.local
+  resolution: "activity@workspace:packages/activity"
+  dependencies:
+    "@intmax2-e2e/shared": "workspace:*"
+    tsx: "npm:^4.20.4"
+    typescript: "npm:^5.9.2"
+    vitest: "npm:^3.2.4"
+  languageName: unknown
+  linkType: soft
 
 "agent-base@npm:^7.1.0, agent-base@npm:^7.1.2":
   version: 7.1.3
@@ -1095,6 +1075,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"deposit@workspace:packages/deposit":
+  version: 0.0.0-use.local
+  resolution: "deposit@workspace:packages/deposit"
+  dependencies:
+    "@intmax2-e2e/shared": "workspace:*"
+    tsx: "npm:^4.20.4"
+    typescript: "npm:^5.9.2"
+    vitest: "npm:^3.2.4"
+  languageName: unknown
+  linkType: soft
+
 "dotenv@npm:^17.2.1":
   version: 17.2.1
   resolution: "dotenv@npm:17.2.1"
@@ -1112,19 +1103,6 @@ __metadata:
   checksum: 10c0/199f2a0c1c16593ca0a145dbf76a962f8033ce3129f01284d48c45ed4e14fea9bbacd7b3610b6cdc33486cef20385ac054948fefc6272fcce645c09468f93031
   languageName: node
   linkType: hard
-
-"e2e@workspace:packages/e2e":
-  version: 0.0.0-use.local
-  resolution: "e2e@workspace:packages/e2e"
-  dependencies:
-    "@intmax2-e2e/shared": "workspace:*"
-    intmax2-server-sdk: "npm:^1.4.6"
-    tsx: "npm:^4.20.4"
-    typescript: "npm:^5.9.2"
-    viem: "npm:^2.33.3"
-    vitest: "npm:^3.2.4"
-  languageName: unknown
-  linkType: soft
 
 "eastasianwidth@npm:^0.2.0":
   version: 0.2.0
@@ -1322,21 +1300,6 @@ __metadata:
   dependencies:
     "@types/estree": "npm:^1.0.0"
   checksum: 10c0/c12e3c2b2642d2bcae7d5aa495c60fa2f299160946535763969a1c83fc74518ffa9c2cd3a8b69ac56aea547df6a8aac25f729a342992ef0bbac5f1c73e78995d
-  languageName: node
-  linkType: hard
-
-"ethers@npm:6.15.0":
-  version: 6.15.0
-  resolution: "ethers@npm:6.15.0"
-  dependencies:
-    "@adraffy/ens-normalize": "npm:1.10.1"
-    "@noble/curves": "npm:1.2.0"
-    "@noble/hashes": "npm:1.3.2"
-    "@types/node": "npm:22.7.5"
-    aes-js: "npm:4.0.0-beta.5"
-    tslib: "npm:2.7.0"
-    ws: "npm:8.17.1"
-  checksum: 10c0/0a4581b662fe46a889a524d3aba43dc6f0ac59b3ae08dce678ee4b5799aab4906109ab24684c9644deedfc9d6e79b59faccecbeda9b6b7ceb085724d596a49e9
   languageName: node
   linkType: hard
 
@@ -1635,6 +1598,7 @@ __metadata:
   resolution: "intmax2-e2e@workspace:."
   dependencies:
     "@biomejs/biome": "npm:2.2.0"
+    "@types/node": "npm:^24.3.0"
     "@vitest/coverage-v8": "npm:^3.2.4"
     dotenv: "npm:^17.2.1"
     typescript: "npm:^5.9.2"
@@ -2149,9 +2113,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pino@npm:^9.8.0":
-  version: 9.8.0
-  resolution: "pino@npm:9.8.0"
+"pino@npm:^9.9.0":
+  version: 9.9.0
+  resolution: "pino@npm:9.9.0"
   dependencies:
     atomic-sleep: "npm:^1.0.0"
     fast-redact: "npm:^3.1.1"
@@ -2166,7 +2130,7 @@ __metadata:
     thread-stream: "npm:^3.0.0"
   bin:
     pino: bin.js
-  checksum: 10c0/a6de40d8c777520a0f2bdd1727512db2dba51d0d8098500ec8326f1f95412e4e704ee4301287ccbbafbf7a7ab07999d5659333a7079d1b70341d0d69e4d40b29
+  checksum: 10c0/e2b05d4b1cf73447648ec98d247fd0f1f8020a819ebc2c97fab7fa8b9efe2d1a82ebf674ed2489bb7a1d3a75350c044c776f124e9c29c004bfb133b9e2ac0871
   languageName: node
   linkType: hard
 
@@ -2610,12 +2574,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:2.7.0":
-  version: 2.7.0
-  resolution: "tslib@npm:2.7.0"
-  checksum: 10c0/469e1d5bf1af585742128827000711efa61010b699cb040ab1800bcd3ccdd37f63ec30642c9e07c4439c1db6e46345582614275daca3e0f4abae29b0083f04a6
-  languageName: node
-  linkType: hard
+"transfer@workspace:packages/transfer":
+  version: 0.0.0-use.local
+  resolution: "transfer@workspace:packages/transfer"
+  dependencies:
+    "@intmax2-e2e/shared": "workspace:*"
+    tsx: "npm:^4.20.4"
+    typescript: "npm:^5.9.2"
+    vitest: "npm:^3.2.4"
+  languageName: unknown
+  linkType: soft
 
 "tslib@npm:2.8.1":
   version: 2.8.1
@@ -2660,10 +2628,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici-types@npm:~6.19.2":
-  version: 6.19.8
-  resolution: "undici-types@npm:6.19.8"
-  checksum: 10c0/078afa5990fba110f6824823ace86073b4638f1d5112ee26e790155f481f2a868cc3e0615505b6f4282bdf74a3d8caad715fd809e870c2bb0704e3ea6082f344
+"undici-types@npm:~7.10.0":
+  version: 7.10.0
+  resolution: "undici-types@npm:7.10.0"
+  checksum: 10c0/8b00ce50e235fe3cc601307f148b5e8fb427092ee3b23e8118ec0a5d7f68eca8cee468c8fc9f15cbb2cf2a3797945ebceb1cbd9732306a1d00e0a9b6afa0f635
   languageName: node
   linkType: hard
 
@@ -2866,6 +2834,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"withdraw@workspace:packages/withdraw":
+  version: 0.0.0-use.local
+  resolution: "withdraw@workspace:packages/withdraw"
+  dependencies:
+    "@intmax2-e2e/shared": "workspace:*"
+    tsx: "npm:^4.20.4"
+    typescript: "npm:^5.9.2"
+    vitest: "npm:^3.2.4"
+  languageName: unknown
+  linkType: soft
+
 "wrap-ansi-cjs@npm:wrap-ansi@^7.0.0":
   version: 7.0.0
   resolution: "wrap-ansi@npm:7.0.0"
@@ -2892,21 +2871,6 @@ __metadata:
   version: 1.0.2
   resolution: "wrappy@npm:1.0.2"
   checksum: 10c0/56fece1a4018c6a6c8e28fbc88c87e0fbf4ea8fd64fc6c63b18f4acc4bd13e0ad2515189786dd2c30d3eec9663d70f4ecf699330002f8ccb547e4a18231fc9f0
-  languageName: node
-  linkType: hard
-
-"ws@npm:8.17.1":
-  version: 8.17.1
-  resolution: "ws@npm:8.17.1"
-  peerDependencies:
-    bufferutil: ^4.0.1
-    utf-8-validate: ">=5.0.2"
-  peerDependenciesMeta:
-    bufferutil:
-      optional: true
-    utf-8-validate:
-      optional: true
-  checksum: 10c0/f4a49064afae4500be772abdc2211c8518f39e1c959640457dcee15d4488628620625c783902a52af2dd02f68558da2868fd06e6fd0e67ebcd09e6881b1b5bfe
   languageName: node
   linkType: hard
 

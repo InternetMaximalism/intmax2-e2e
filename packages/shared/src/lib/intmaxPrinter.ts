@@ -1,6 +1,6 @@
-import { logger } from "@intmax2-e2e/shared";
 import type { TokenBalance } from "intmax2-server-sdk";
 import type { AccountSummary, ClientAddresses } from "../types";
+import { logger } from "./logger";
 import { formatTokenAmount } from "./utils";
 
 export const formatAndLogINTMAXBalances = (balances: TokenBalance[]) => {
@@ -82,11 +82,11 @@ export const formatAndActivities = ({
 
   output += "─".repeat(40) + "\n";
 
-  output += `TRANSFERS\n`;
+  output += `TRANSFERS(recipient)\n`;
   output += `   Total Count: ${transfers}\n`;
   output += "─".repeat(40) + "\n";
 
-  output += `TRANSACTIONS\n`;
+  output += `TRANSACTIONS(sender)\n`;
   output += `   Total Count: ${transactions}\n`;
 
   output += "═".repeat(80) + "\n";
