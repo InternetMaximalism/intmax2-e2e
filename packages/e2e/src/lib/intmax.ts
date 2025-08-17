@@ -1,9 +1,17 @@
 import { config, createNetworkClient, LiquidityAbi, logger } from "@intmax2-e2e/shared";
-import { IntMaxNodeClient, type Token, TokenType, TransactionStatus } from "intmax2-server-sdk";
+import {
+  FetchTransactionsRequest,
+  FetchWithdrawalsResponse,
+  IntMaxNodeClient,
+  type Token,
+  TokenType,
+  TransactionStatus,
+  type ContractWithdrawal,
+} from "intmax2-server-sdk";
 import { type Abi, formatEther, type PublicClient } from "viem";
 import type { Account } from "viem/accounts";
 import { privateKeyToAccount } from "viem/accounts";
-import { ETH_TOKEN_INDEX, TRANSFER_INTERVAL, WITHDRAW_INTERVAL } from "../constants";
+import { ETH_TOKEN_INDEX, TRANSFER_INTERVAL, WITHDRAW_INTERVAL, MAX_LIMIT } from "../constants";
 import type {
   ClientAddresses,
   DepositParams,
@@ -86,7 +94,6 @@ export class INTMAXClient {
     try {
       logger.debug("Fetching INTMAX token balances...");
       const { balances } = await this.client.fetchTokenBalances();
-      console.log("balances", balances);
 
       if (balances.length === 0) {
         logger.info("No token balances found");
@@ -102,21 +109,108 @@ export class INTMAXClient {
     }
   }
 
-  // TODO: pagination
-  async fetchDeposits() {
-    return this.client.fetchDeposits();
+  async fetchDeposits(params?: FetchTransactionsRequest) {
+    return this.client.fetchDeposits(params);
   }
 
-  async fetchTransfers() {
-    return this.client.fetchTransfers();
+  async fetchAllDeposits() {
+    const allDeposits = [];
+    let cursor: string | null = null;
+    let response;
+
+    do {
+      response = await this.fetchDeposits({ cursor, limit: MAX_LIMIT });
+
+      if (response.items && response.items.length > 0) {
+        allDeposits.push(...response.items);
+      }
+
+      cursor = response.pagination.next_cursor || null;
+    } while (response.pagination.has_more && response.items.length === MAX_LIMIT);
+
+    return allDeposits;
   }
 
-  async fetchTransactions() {
-    return this.client.fetchTransactions();
+  async fetchTransfers(params?: FetchTransactionsRequest) {
+    return this.client.fetchTransfers(params);
   }
 
-  async fetchWithdrawals() {
-    return this.client.fetchWithdrawals();
+  async fetchAllTransfers() {
+    const allTransfers = [];
+    let cursor: string | null = null;
+    let response;
+
+    do {
+      response = await this.fetchTransfers({ cursor, limit: MAX_LIMIT });
+
+      if (response.items && response.items.length > 0) {
+        allTransfers.push(...response.items);
+      }
+
+      cursor = response.pagination.next_cursor || null;
+    } while (response.pagination.has_more && response.items.length === MAX_LIMIT);
+
+    return allTransfers;
+  }
+
+  async fetchTransactions(params?: FetchTransactionsRequest) {
+    return this.client.fetchTransactions(params);
+  }
+
+  async fetchAllTransactions() {
+    const allTransactions = [];
+    let cursor: string | null = null;
+    let response;
+
+    do {
+      response = await this.fetchTransactions({ cursor, limit: MAX_LIMIT });
+
+      if (response.items && response.items.length > 0) {
+        allTransactions.push(...response.items);
+      }
+
+      cursor = response.pagination.next_cursor || null;
+    } while (response.pagination.has_more && response.items.length === MAX_LIMIT);
+
+    return allTransactions;
+  }
+
+  async fetchWithdrawals(params?: FetchTransactionsRequest) {
+    return this.client.fetchWithdrawals(params);
+  }
+
+  async fetchAllWithdrawals() {
+    const allWithdrawals: {
+      failed: ContractWithdrawal[];
+      need_claim: ContractWithdrawal[];
+      relayed: ContractWithdrawal[];
+      requested: ContractWithdrawal[];
+      success: ContractWithdrawal[];
+    } = {
+      failed: [],
+      need_claim: [],
+      relayed: [],
+      requested: [],
+      success: [],
+    };
+    let cursor: string | null = null;
+    let response: FetchWithdrawalsResponse;
+
+    do {
+      response = await this.fetchWithdrawals({ cursor, limit: MAX_LIMIT });
+
+      if (response?.withdrawals) {
+        (Object.keys(allWithdrawals) as Array<keyof typeof allWithdrawals>).forEach((status) => {
+          if (response.withdrawals[status]?.length) {
+            allWithdrawals[status].push(...response.withdrawals[status]);
+          }
+        });
+      }
+
+      cursor = response?.pagination?.next_cursor?.toString() || null;
+    } while (response?.pagination?.has_more);
+
+    return allWithdrawals;
   }
 
   async deposit({ tokenIndex, amount }: DepositParams) {
