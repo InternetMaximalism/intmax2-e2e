@@ -2,7 +2,7 @@ import { makeValidator } from "envalid";
 
 export const ethPrivateKey = makeValidator<`0x${string}`>((input) => {
   if (typeof input !== "string" || !/^0x[a-fA-F0-9]{64}$/.test(input)) {
-    throw new Error("ETH_PRIVATE_KEY must be 0x followed by 64 hex characters");
+    throw new Error("E2E_ETH_PRIVATE_KEY must be 0x followed by 64 hex characters");
   }
   return input as `0x${string}`;
 });

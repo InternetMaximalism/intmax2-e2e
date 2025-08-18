@@ -37,7 +37,7 @@ export class INTMAXClient {
   constructor() {
     const clientConfig = {
       environment: config.NETWORK_ENVIRONMENT,
-      eth_private_key: config.ETH_PRIVATE_KEY,
+      eth_private_key: config.E2E_ETH_PRIVATE_KEY,
       l1_rpc_url: config.L1_RPC_URLS[this.currentRpcIndex],
       ...(config.BALANCE_PROVER_URL && {
         urls: {
@@ -48,7 +48,7 @@ export class INTMAXClient {
     };
 
     this.client = new IntMaxNodeClient(clientConfig);
-    this.account = privateKeyToAccount(config.ETH_PRIVATE_KEY);
+    this.account = privateKeyToAccount(config.E2E_ETH_PRIVATE_KEY);
     this.ethereumClient = createNetworkClient();
   }
 

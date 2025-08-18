@@ -1,4 +1,10 @@
-import { ETH_TOKEN_INDEX, formatAndLogAddresses, INTMAXClient, logger } from "@intmax2-e2e/shared";
+import {
+  config,
+  ETH_TOKEN_INDEX,
+  formatAndLogAddresses,
+  INTMAXClient,
+  logger,
+} from "@intmax2-e2e/shared";
 
 export const performJob = async (): Promise<void> => {
   const intmaxClient = INTMAXClient.getInstance();
@@ -8,7 +14,7 @@ export const performJob = async (): Promise<void> => {
 
   const withdrawResult = await intmaxClient.withdraw({
     tokenIndex: ETH_TOKEN_INDEX,
-    amount: 0.000001,
+    amount: config.WITHDRAW_AMOUNT,
     recipient: intmaxClient.getAddresses()?.ethAddress,
   });
   logger.info(`TxRoot ${withdrawResult.txTreeRoot}`);
