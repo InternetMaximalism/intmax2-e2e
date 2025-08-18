@@ -1,4 +1,10 @@
-import { ETH_TOKEN_INDEX, formatAndLogAddresses, INTMAXClient, logger } from "@intmax2-e2e/shared";
+import {
+  config,
+  ETH_TOKEN_INDEX,
+  formatAndLogAddresses,
+  INTMAXClient,
+  logger,
+} from "@intmax2-e2e/shared";
 
 export const performJob = async (): Promise<void> => {
   const intmaxClient = INTMAXClient.getInstance();
@@ -8,7 +14,7 @@ export const performJob = async (): Promise<void> => {
 
   const depositResult = await intmaxClient.deposit({
     tokenIndex: ETH_TOKEN_INDEX,
-    amount: 0.01,
+    amount: config.DEPOSIT_AMOUNT,
   });
   logger.info(`Deposit TxHash: ${depositResult.txHash}`);
 };

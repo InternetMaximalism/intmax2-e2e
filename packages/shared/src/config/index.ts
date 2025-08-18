@@ -1,4 +1,4 @@
-import { cleanEnv, str } from "envalid";
+import { cleanEnv, num, str } from "envalid";
 import { version } from "../../../../package.json";
 import { contractAddress, ethPrivateKey, rpcUrls } from "./validtor";
 
@@ -18,9 +18,13 @@ export const config = cleanEnv(process.env, {
   LIQUIDITY_CONTRACT_ADDRESS: contractAddress(),
   // sdk
   NETWORK_ENVIRONMENT: str({ default: "testnet", choices: ["mainnet", "testnet"] as const }),
-  ETH_PRIVATE_KEY: ethPrivateKey(),
+  E2E_ETH_PRIVATE_KEY: ethPrivateKey(),
   L1_RPC_URLS: rpcUrls(),
   BALANCE_PROVER_URL: str({ default: undefined }),
+  DEPOSIT_AMOUNT: num({ default: 0.01 }),
+  WITHDRAW_AMOUNT: num({ default: 0.00001 }),
+  TRANSFER_AMOUNT: num({ default: 0.00001 }),
+  RECIPIENT_INTMAX2_ADDRESS: str({ default: undefined }),
 });
 
 export const isProduction = config.NODE_ENV === "production";
