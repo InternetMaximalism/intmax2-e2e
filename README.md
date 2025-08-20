@@ -58,3 +58,10 @@ Build and run the project in a Docker container:
 docker build -f docker/Dockerfile -t intmax2-e2e .
 docker run --rm -p 3000:3000 --env-file .env intmax2-e2e workspace activity start
 ```
+
+## Config
+
+See the documentation for details on available environment variables and how to configure endpoints.
+This configuration allows you to integrate INTMAX2 blockchain data into your applications.
+
+- [ENV](./packages/shared/src/config/index.ts)
