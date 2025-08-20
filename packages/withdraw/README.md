@@ -1,6 +1,6 @@
-# e2e
+# withdraw
 
-The e2e service monitors and manages INTMAX interactions.
+The Withdraw service is responsible for monitoring and managing withdrawal-related interactions within the INTMAX network.
 
 ## Usage
 
@@ -11,7 +11,7 @@ To set up the development environment:
 yarn
 
 # dev
-yarn workspace e2e dev
+yarn workspace withdraw dev
 
 # build
 yarn build
