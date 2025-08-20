@@ -26,6 +26,18 @@ import { logger } from "./logger";
 
 export class INTMAXClient {
   private static instance: INTMAXClient;
+  private static readonly RPC_ERROR_PATTERNS = [
+    /network error/i,
+    /connection error/i,
+    /timeout/i,
+    /rate limit/i,
+    /too many requests/i,
+    /service unavailable/i,
+    /internal server error/i,
+    /bad gateway/i,
+    /gateway timeout/i,
+    /HTTP request failed/i,
+  ];
   private client: IntMaxNodeClient;
   private account: Account;
   private isLoggedIn: boolean = false;
@@ -33,6 +45,7 @@ export class INTMAXClient {
   private tokenInfoMap: TokenInfoMap = new Map();
   private ethereumClient: PublicClient;
   private currentRpcIndex: number = 0;
+  private maxRetries: number = 3;
 
   constructor() {
     const clientConfig = {
@@ -218,16 +231,16 @@ export class INTMAXClient {
   }
 
   async deposit({ tokenIndex, amount }: DepositParams) {
-    const token = await this.getToken(tokenIndex);
+    return this.executeWithRetry(async () => {
+      const token = await this.getToken(tokenIndex);
 
-    const depositRequest = {
-      amount,
-      token,
-      address: this.client.address,
-      isMining: false,
-    };
+      const depositRequest = {
+        amount,
+        token,
+        address: this.client.address,
+        isMining: false,
+      };
 
-    try {
       const gas = await this.client.estimateDepositGas({
         ...depositRequest,
         isGasEstimation: true,
@@ -241,12 +254,7 @@ export class INTMAXClient {
       }
 
       return depositResult;
-    } catch (error) {
-      logger.error(
-        `Failed to deposit: ${error instanceof Error ? error.message : "Unknown error"}`,
-      );
-      throw error;
-    }
+    }, "deposit");
   }
 
   async transfer(transferParams: TransferParams[]) {
@@ -409,6 +417,76 @@ export class INTMAXClient {
       );
       throw error;
     }
+  }
+
+  private isRpcError(error: Error) {
+    const errorMessage = error.message.toLowerCase();
+    return INTMAXClient.RPC_ERROR_PATTERNS.some((pattern) => pattern.test(errorMessage));
+  }
+
+  private async rotateRPC() {
+    if (config.L1_RPC_URLS.length <= 1) {
+      logger.warn("Only one RPC URL available, cannot rotate");
+      return false;
+    }
+
+    const previousIndex = this.currentRpcIndex;
+    this.currentRpcIndex = (this.currentRpcIndex + 1) % config.L1_RPC_URLS.length;
+
+    logger.info(
+      `Rotating RPC from ${config.L1_RPC_URLS[previousIndex]} to ${config.L1_RPC_URLS[this.currentRpcIndex]}`,
+    );
+
+    const clientConfig = {
+      environment: config.NETWORK_ENVIRONMENT,
+      eth_private_key: config.E2E_ETH_PRIVATE_KEY,
+      l1_rpc_url: config.L1_RPC_URLS[this.currentRpcIndex],
+      ...(config.BALANCE_PROVER_URL && {
+        urls: {
+          balance_prover_url: config.BALANCE_PROVER_URL,
+          use_private_zkp_server: false,
+        },
+      }),
+    };
+
+    this.client = new IntMaxNodeClient(clientConfig);
+    await this.client.login();
+
+    return true;
+  }
+
+  private async executeWithRetry<T>(
+    operation: () => Promise<T>,
+    operationName: string,
+  ): Promise<T> {
+    let lastError: Error;
+    let attempts = 0;
+
+    while (attempts < this.maxRetries) {
+      try {
+        return await operation();
+      } catch (error) {
+        lastError = error as Error;
+        attempts++;
+
+        logger.warn(
+          `${operationName} failed (attempt ${attempts}/${this.maxRetries}): ${lastError.message}`,
+        );
+
+        if (this.isRpcError(lastError) && attempts < this.maxRetries) {
+          const rotated = await this.rotateRPC();
+          if (!rotated) {
+            break;
+          }
+          logger.info(`Retrying ${operationName} with new RPC endpoint`);
+        } else if (attempts < this.maxRetries) {
+          await new Promise((resolve) => setTimeout(resolve, 1000 * attempts));
+        }
+      }
+    }
+
+    logger.error(`${operationName} failed after ${this.maxRetries} attempts`);
+    throw lastError!;
   }
 
   private async formatToken({ tokenIndex, decimals, contractAddress, price }: Token) {
