@@ -14,6 +14,8 @@ export const config = cleanEnv(process.env, {
   }),
   SERVICE_NAME: str({ default: "intmax2-e2e" }),
   SERVICE_VERSION: str({ default: version }),
+  // blockchain
+  NETWORK_CHAIN: str({ default: "sepolia", choices: ["mainnet", "sepolia"] as const }),
   // contract
   LIQUIDITY_CONTRACT_ADDRESS: contractAddress(),
   // sdk
