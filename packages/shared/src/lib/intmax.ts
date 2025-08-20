@@ -11,7 +11,6 @@ import { type Abi, formatEther, type PublicClient } from "viem";
 import type { Account } from "viem/accounts";
 import { privateKeyToAccount } from "viem/accounts";
 import { LiquidityAbi } from "../abi";
-import { createNetworkClient } from "../blockchain";
 import { config } from "../config";
 import { ETH_TOKEN_INDEX, MAX_LIMIT, TRANSFER_INTERVAL, WITHDRAW_INTERVAL } from "../constants";
 import type {
@@ -22,6 +21,7 @@ import type {
   TransferParams,
   WithdrawParams,
 } from "../types";
+import { createNetworkClient } from "./blockchain";
 import { logger } from "./logger";
 
 export class INTMAXClient {

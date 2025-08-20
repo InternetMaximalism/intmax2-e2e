@@ -1,6 +1,6 @@
 # transfer
 
-The transfer service monitors and manages INTMAX interactions.
+The Transfer service is responsible for monitoring and managing transfer-related interactions within the INTMAX network.
 
 ## Usage
 
