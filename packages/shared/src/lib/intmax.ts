@@ -399,6 +399,7 @@ export class INTMAXClient {
       this.syncPromise = null;
     }
   }
+
   async waitForTransactionConfirmation(params: WaitForTransactionConfirmationRequest) {
     return this.client.waitForTransactionConfirmation(params);
   }
