@@ -19,8 +19,8 @@ export const performJob = async (): Promise<void> => {
   });
   logger.info(`TxRoot ${withdrawResult.txTreeRoot}`);
 
-  const receipt = await intmaxClient.waitForTransactionConfirmation(withdrawResult);
-  if (receipt.status === "success") {
+  const confirmationResult = await intmaxClient.waitForTransactionConfirmation(withdrawResult);
+  if (confirmationResult.status === "success") {
     logger.info("Withdrawal transaction confirmed");
   }
 };

@@ -48,6 +48,7 @@ export class INTMAXClient {
   private ethereumClient: PublicClient;
   private currentRpcIndex: number = 0;
   private maxRetries: number = 3;
+  private syncPromise: Promise<any> | null = null;
 
   constructor() {
     const clientConfig: ConstructorNodeParams = {
@@ -382,9 +383,22 @@ export class INTMAXClient {
   }
 
   async sync() {
-    return this.client.sync();
-  }
+    if (this.syncPromise) {
+      return this.syncPromise;
+    }
 
+    this.syncPromise = this.client.sync();
+
+    try {
+      const result = await this.syncPromise;
+      return result;
+    } catch (error) {
+      logger.error(`Failed to sync: ${error instanceof Error ? error.message : "Unknown error"}`);
+      throw error;
+    } finally {
+      this.syncPromise = null;
+    }
+  }
   async waitForTransactionConfirmation(params: WaitForTransactionConfirmationRequest) {
     return this.client.waitForTransactionConfirmation(params);
   }

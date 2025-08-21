@@ -19,17 +19,12 @@ export const performJob = async (): Promise<void> => {
   const intmaxBalances = await intmaxClient.fetchINTMAXBalances();
   formatAndLogINTMAXBalances(intmaxBalances);
 
-  console.log("1");
   const { accountSummary } = await fetchAllAccountActivity(intmaxClient);
-  console.log("2");
   formatAndActivities(accountSummary);
-  console.log("3");
 
   logger.info("Syncing account balances");
-  console.log("4");
   await intmaxClient.sync();
   logger.info("Account balances synced successfully");
-  console.log("5");
 };
 
 const fetchAllAccountActivity = async (intmaxClient: INTMAXClient) => {
