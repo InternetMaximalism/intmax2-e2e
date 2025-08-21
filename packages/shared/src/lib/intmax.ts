@@ -1,4 +1,5 @@
 import {
+  ConstructorNodeParams,
   type ContractWithdrawal,
   type FetchTransactionsRequest,
   type FetchWithdrawalsResponse,
@@ -6,6 +7,7 @@ import {
   type Token,
   TokenType,
   TransactionStatus,
+  WaitForTransactionConfirmationRequest,
 } from "intmax2-server-sdk";
 import { type Abi, formatEther, type PublicClient } from "viem";
 import type { Account } from "viem/accounts";
@@ -46,9 +48,10 @@ export class INTMAXClient {
   private ethereumClient: PublicClient;
   private currentRpcIndex: number = 0;
   private maxRetries: number = 3;
+  private syncPromise: Promise<any> | null = null;
 
   constructor() {
-    const clientConfig = {
+    const clientConfig: ConstructorNodeParams = {
       environment: config.NETWORK_ENVIRONMENT,
       eth_private_key: config.E2E_ETH_PRIVATE_KEY,
       l1_rpc_url: config.L1_RPC_URLS[this.currentRpcIndex],
@@ -58,6 +61,7 @@ export class INTMAXClient {
           use_private_zkp_server: false,
         },
       }),
+      showLogs: config.SDK_LOG_ENABLED,
     };
 
     this.client = new IntMaxNodeClient(clientConfig);
@@ -238,13 +242,11 @@ export class INTMAXClient {
         amount,
         token,
         address: this.client.address,
-        isMining: false,
       };
 
       const gas = await this.client.estimateDepositGas({
         ...depositRequest,
         isGasEstimation: true,
-        isMining: false,
       });
       logger.debug(`Estimated gas for deposit: ${gas.toString()}`);
 
@@ -380,6 +382,27 @@ export class INTMAXClient {
     };
   }
 
+  async sync() {
+    if (this.syncPromise) {
+      return this.syncPromise;
+    }
+
+    this.syncPromise = this.client.sync();
+
+    try {
+      const result = await this.syncPromise;
+      return result;
+    } catch (error) {
+      logger.error(`Failed to sync: ${error instanceof Error ? error.message : "Unknown error"}`);
+      throw error;
+    } finally {
+      this.syncPromise = null;
+    }
+  }
+  async waitForTransactionConfirmation(params: WaitForTransactionConfirmationRequest) {
+    return this.client.waitForTransactionConfirmation(params);
+  }
+
   private async getTokenType(tokenIndex: number) {
     if (tokenIndex === ETH_TOKEN_INDEX) {
       return TokenType.NATIVE;
@@ -433,24 +456,11 @@ export class INTMAXClient {
     const previousIndex = this.currentRpcIndex;
     this.currentRpcIndex = (this.currentRpcIndex + 1) % config.L1_RPC_URLS.length;
 
-    logger.info(
+    logger.debug(
       `Rotating RPC from ${config.L1_RPC_URLS[previousIndex]} to ${config.L1_RPC_URLS[this.currentRpcIndex]}`,
     );
 
-    const clientConfig = {
-      environment: config.NETWORK_ENVIRONMENT,
-      eth_private_key: config.E2E_ETH_PRIVATE_KEY,
-      l1_rpc_url: config.L1_RPC_URLS[this.currentRpcIndex],
-      ...(config.BALANCE_PROVER_URL && {
-        urls: {
-          balance_prover_url: config.BALANCE_PROVER_URL,
-          use_private_zkp_server: false,
-        },
-      }),
-    };
-
-    this.client = new IntMaxNodeClient(clientConfig);
-    await this.client.login();
+    this.client.updatePublicClientRpc(config.L1_RPC_URLS[this.currentRpcIndex]);
 
     return true;
   }

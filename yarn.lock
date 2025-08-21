@@ -335,7 +335,7 @@ __metadata:
   resolution: "@intmax2-e2e/shared@workspace:packages/shared"
   dependencies:
     envalid: "npm:^8.1.0"
-    intmax2-server-sdk: "npm:^1.4.6"
+    intmax2-server-sdk: "npm:^1.4.7"
     pino: "npm:^9.9.0"
     pino-pretty: "npm:^13.1.1"
     typescript: "npm:^5.9.2"
@@ -1612,15 +1612,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"intmax2-server-sdk@npm:^1.4.6":
-  version: 1.4.6
-  resolution: "intmax2-server-sdk@npm:1.4.6"
+"intmax2-server-sdk@npm:^1.4.7":
+  version: 1.4.7
+  resolution: "intmax2-server-sdk@npm:1.4.7"
   dependencies:
     "@scure/bip32": "npm:^1.7.0"
     "@scure/bip39": "npm:^1.6.0"
     axios: "npm:^1.11.0"
     viem: "npm:^2.31.3"
-  checksum: 10c0/b8b7a803fde448f307f28a3294d291abc354ab24464c3be6a341344bc9bda2c8bd009669562e59e963ff77d2ba89fa7f1105f763c5d56253a3f22405ebafd26c
+  checksum: 10c0/277d54de472497a5d527af618def6c72f5e84c92f53aaebd5252783f6cb2ef982884f1a21379debafede8a2ead6694edf665a279a1978a5fbf9c0b003b9146b5
   languageName: node
   linkType: hard
 

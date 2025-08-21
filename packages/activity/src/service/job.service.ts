@@ -4,6 +4,7 @@ import {
   formatAndLogINTMAXBalances,
   INTMAXClient,
   logEthereumBalance,
+  logger,
 } from "@intmax2-e2e/shared";
 
 export const performJob = async (): Promise<void> => {
@@ -18,7 +19,12 @@ export const performJob = async (): Promise<void> => {
   const intmaxBalances = await intmaxClient.fetchINTMAXBalances();
   formatAndLogINTMAXBalances(intmaxBalances);
 
-  await fetchAllAccountActivity(intmaxClient);
+  const { accountSummary } = await fetchAllAccountActivity(intmaxClient);
+  formatAndActivities(accountSummary);
+
+  logger.info("Syncing account balances");
+  await intmaxClient.sync();
+  logger.info("Account balances synced successfully");
 };
 
 const fetchAllAccountActivity = async (intmaxClient: INTMAXClient) => {
@@ -44,12 +50,11 @@ const fetchAllAccountActivity = async (intmaxClient: INTMAXClient) => {
     transactions: transactions.pagination.total_count, // send
   };
 
-  formatAndActivities(accountSummary);
-
   return {
     deposits,
     withdrawals,
     transfers,
     transactions,
+    accountSummary,
   };
 };

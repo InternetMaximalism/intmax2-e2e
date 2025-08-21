@@ -20,4 +20,11 @@ export const performJob = async (): Promise<void> => {
     },
   ]);
   logger.info(`TxRoot ${transferResult.txTreeRoot}`);
+
+  const confirmationResult = await intmaxClient.waitForTransactionConfirmation(transferResult);
+  if (confirmationResult.status !== "success") {
+    throw new Error(`Transfer transaction confirmation failed: ${confirmationResult.status}`);
+  }
+
+  logger.info("Transfer transaction confirmed");
 };
