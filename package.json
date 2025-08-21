@@ -1,6 +1,6 @@
 {
   "name": "intmax2-e2e",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "license": "MIT",
   "description": "End-to-End Testing for INTMAX2 blockchain",
   "repository": {
