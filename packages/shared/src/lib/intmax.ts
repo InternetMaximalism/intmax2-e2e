@@ -1,4 +1,5 @@
 import {
+  ConstructorNodeParams,
   type ContractWithdrawal,
   type FetchTransactionsRequest,
   type FetchWithdrawalsResponse,
@@ -48,7 +49,7 @@ export class INTMAXClient {
   private maxRetries: number = 3;
 
   constructor() {
-    const clientConfig = {
+    const clientConfig: ConstructorNodeParams = {
       environment: config.NETWORK_ENVIRONMENT,
       eth_private_key: config.E2E_ETH_PRIVATE_KEY,
       l1_rpc_url: config.L1_RPC_URLS[this.currentRpcIndex],
@@ -58,6 +59,7 @@ export class INTMAXClient {
           use_private_zkp_server: false,
         },
       }),
+      showLogs: false,
     };
 
     this.client = new IntMaxNodeClient(clientConfig);
