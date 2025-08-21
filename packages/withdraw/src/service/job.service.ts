@@ -18,4 +18,9 @@ export const performJob = async (): Promise<void> => {
     recipient: intmaxClient.getAddresses()?.ethAddress,
   });
   logger.info(`TxRoot ${withdrawResult.txTreeRoot}`);
+
+  const receipt = await intmaxClient.waitForTransactionConfirmation(withdrawResult);
+  if (receipt.status === "success") {
+    logger.info("Withdrawal transaction confirmed");
+  }
 };

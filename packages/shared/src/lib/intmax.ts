@@ -7,6 +7,7 @@ import {
   type Token,
   TokenType,
   TransactionStatus,
+  WaitForTransactionConfirmationRequest,
 } from "intmax2-server-sdk";
 import { type Abi, formatEther, type PublicClient } from "viem";
 import type { Account } from "viem/accounts";
@@ -59,7 +60,7 @@ export class INTMAXClient {
           use_private_zkp_server: false,
         },
       }),
-      showLogs: false,
+      showLogs: config.SDK_LOG_ENABLED,
     };
 
     this.client = new IntMaxNodeClient(clientConfig);
@@ -378,6 +379,14 @@ export class INTMAXClient {
       intmaxAddress: this.client.address,
       account: this.account,
     };
+  }
+
+  async sync() {
+    return this.client.sync();
+  }
+
+  async waitForTransactionConfirmation(params: WaitForTransactionConfirmationRequest) {
+    return this.client.waitForTransactionConfirmation(params);
   }
 
   private async getTokenType(tokenIndex: number) {
