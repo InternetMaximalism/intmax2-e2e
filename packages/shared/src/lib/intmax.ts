@@ -238,13 +238,11 @@ export class INTMAXClient {
         amount,
         token,
         address: this.client.address,
-        isMining: false,
       };
 
       const gas = await this.client.estimateDepositGas({
         ...depositRequest,
         isGasEstimation: true,
-        isMining: false,
       });
       logger.debug(`Estimated gas for deposit: ${gas.toString()}`);
 
@@ -433,24 +431,11 @@ export class INTMAXClient {
     const previousIndex = this.currentRpcIndex;
     this.currentRpcIndex = (this.currentRpcIndex + 1) % config.L1_RPC_URLS.length;
 
-    logger.info(
+    logger.debug(
       `Rotating RPC from ${config.L1_RPC_URLS[previousIndex]} to ${config.L1_RPC_URLS[this.currentRpcIndex]}`,
     );
 
-    const clientConfig = {
-      environment: config.NETWORK_ENVIRONMENT,
-      eth_private_key: config.E2E_ETH_PRIVATE_KEY,
-      l1_rpc_url: config.L1_RPC_URLS[this.currentRpcIndex],
-      ...(config.BALANCE_PROVER_URL && {
-        urls: {
-          balance_prover_url: config.BALANCE_PROVER_URL,
-          use_private_zkp_server: false,
-        },
-      }),
-    };
-
-    this.client = new IntMaxNodeClient(clientConfig);
-    await this.client.login();
+    this.client.updatePublicClientRpc(config.L1_RPC_URLS[this.currentRpcIndex]);
 
     return true;
   }
