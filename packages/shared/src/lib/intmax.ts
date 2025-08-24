@@ -61,7 +61,7 @@ export class INTMAXClient {
           use_private_zkp_server: false,
         },
       }),
-      showLogs: config.SDK_LOG_ENABLED,
+      loggerLevel: config.SDK_LOG_LEVEL,
     };
 
     this.client = new IntMaxNodeClient(clientConfig);

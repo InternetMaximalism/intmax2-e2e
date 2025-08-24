@@ -41,3 +41,11 @@ export const rpcUrls = makeValidator<string[]>((value: string) => {
 
   return urls;
 });
+
+export const sdkLogLevel = makeValidator<"error" | "warn" | "info" | "none">((input) => {
+  const validLevels = ["error", "warn", "info", "none"];
+  if (!validLevels.includes(input)) {
+    throw new Error(`SDK_LOG_LEVEL must be one of: ${validLevels.join(", ")}`);
+  }
+  return input as "error" | "warn" | "info" | "none";
+});
