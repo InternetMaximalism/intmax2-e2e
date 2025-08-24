@@ -1,6 +1,6 @@
-import { bool, cleanEnv, num, str } from "envalid";
+import { cleanEnv, num, str } from "envalid";
 import { version } from "../../../../package.json";
-import { contractAddress, ethPrivateKey, rpcUrls } from "./validtor";
+import { contractAddress, ethPrivateKey, rpcUrls, sdkLogLevel } from "./validtor";
 
 export const config = cleanEnv(process.env, {
   // app
@@ -48,7 +48,9 @@ export const config = cleanEnv(process.env, {
     default: undefined,
     desc: "Optional URL for custom balance prover service",
   }),
-  SDK_LOG_ENABLED: bool({ default: false, desc: "Enable or disable SDK logging" }),
+  SDK_LOG_LEVEL: sdkLogLevel({
+    default: "info",
+  }),
   DEPOSIT_AMOUNT: num({
     default: 0.01,
     desc: "Default amount for deposit transactions in ETH",
