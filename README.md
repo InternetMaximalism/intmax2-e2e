@@ -56,10 +56,8 @@ Deployments are automated via **Cloud Build** when changes are pushed or merged 
 
 | Branch | Environment |
 | :--- | :--- |
-| `dev` | **Development** |
 | `stage` | **Staging(Testnet)** |
 | `main` | **Production(Mainnet)** |
-
 
 ## Docker
 
