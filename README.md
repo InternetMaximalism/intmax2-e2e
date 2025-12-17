@@ -50,6 +50,17 @@ yarn test --watch
 yarn coverage
 ```
 
+## Deployment
+
+Deployments are automated via **Cloud Build** when changes are pushed or merged into specific branches.
+
+| Branch | Environment |
+| :--- | :--- |
+| `dev` | **Development** |
+| `stage` | **Staging(Testnet)** |
+| `main` | **Production(Mainnet)** |
+
+
 ## Docker
 
 Build and run the project in a Docker container:
